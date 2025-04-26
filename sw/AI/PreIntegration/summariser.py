@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import random
+import gc
 import time
 from tqdm import tqdm
 import json
@@ -9,9 +10,10 @@ import orjson
 from pathlib import Path
 from llama_cpp import Llama
 
+
 #Global variables
 MODEL_PATH = "/home/tarik8422/llama.cpp/models/deepseek-r1.gguf"
-MAX_TOKENS = 256
+MAX_TOKENS = 128
 MAX_CTX = 8192  #match server --ctx-size
 NUM_PROCESSES = 5
 global_semaphore = asyncio.Semaphore(5)
@@ -64,10 +66,8 @@ def split_by_tokens(tokeniser, text, max_tokens):
 #takes input and forms a full prompt for the model
 def make_summary_prompt(text):
     return f"""### Instruction:
-Read the text carefully. Provide a concise but detailed summary that includes:
-- Explanation of each assertion, directive, commitment, emotion and declaration where applicable  
-- Any important tasks or information in bullet point format
-
+Read the text carefully. Provide a concise but detailed summary that includes: 
+- Any important assertion, directive, commitment, emotion and declaration where applicable in bullet point format
 ### Text:
 {text}
 
@@ -101,7 +101,7 @@ async def query_llama(session, prompt, max_tokens, retries=3, use_semaphore=True
                         logger.error(f"Request failed with status {resp.status} — Prompt: {prompt[:60]!r}")
                         return f"[Error {resp.status}]"
                     else:
-                        logger.info(f"Connection successful. Response received for prompt starting with: {prompt[:40]!r}")
+                        #logger.info(f"Connection successful. Response received for prompt starting with: {prompt[:40]!r}")
                         data = await resp.json()
                         logger.info("Successfully received model response.") 
                         return data["content"].strip()
@@ -111,7 +111,7 @@ async def query_llama(session, prompt, max_tokens, retries=3, use_semaphore=True
                 await asyncio.sleep(delay + random.uniform(0, 0.1))            
         
     logger.error(f"Failed after {retries} retries for prompt start: {prompt[:40]!r}")
-    FAILED_LOG.write_text(f"{prompt[:60]}\nError: {last_error}\n", encoding="utf-8")
+    logger.error(f"{prompt[:60]}\nError: {last_error}\n", encoding="utf-8")
     return f"[Error: {last_error}]"
     
 #Main function
@@ -169,4 +169,11 @@ async def summarise_all(highlighted):
 
 if __name__ == "__main__":
     print("Script started", flush=True)
-    asyncio.run(summarise_all(highlighted))
+    summaries, failed = asyncio.run(summarise_all(highlighted))
+
+    print("Summaries:", summaries)
+
+    if failed != []:
+        print("Failed Summaries:", failed)
+    else:
+        print("No failed summaries.")
