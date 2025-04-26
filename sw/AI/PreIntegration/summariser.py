@@ -14,6 +14,7 @@ MODEL_PATH = "/home/tarik8422/llama.cpp/models/deepseek-r1.gguf"
 MAX_TOKENS = 256
 MAX_CTX = 8192  #match server --ctx-size
 NUM_PROCESSES = 5
+global_semaphore = asyncio.Semaphore(5)
 
 #configures logging
 FAILED_LOG = Path("failed.log")
@@ -74,7 +75,7 @@ Read the text carefully. Provide a concise but detailed summary that includes:
 """
 
 #server query function
-async def query_llama(session, prompt, max_tokens, retries=3 ):
+async def query_llama(session, prompt, max_tokens, retries=3, use_semaphore=True):
     print(f"starting summariser {prompt[:40]!r}")
 
     #default server location
@@ -89,23 +90,26 @@ async def query_llama(session, prompt, max_tokens, retries=3 ):
         "top_k": 40,
         "top_p": 0.95,
     }
+
     #attempts to contact the server
-    for attempt in range(retries):
-        try: 
-            async with session.post(url, json=payload, timeout=timeout) as resp:
-                if resp.status != 200:
-                    logger.error(f"Request failed with status {resp.status} — Prompt: {prompt[:60]!r}")
-                    return f"[Error {resp.status}]"
-                else:
-                    logger.info(f"Connection successful. Response received for prompt starting with: {prompt[:40]!r}")
-                    data = await resp.json()
-                    logger.info("Successfully received model response.") 
-                    return data["content"].strip()
-        except Exception as e:
-            last_error = e
-            logger.warning(f"An error occurred during query: {e}. retry {attempt+1} of {retries}")
-            await asyncio.sleep(delay + random.uniform(0, 0.1))            
-    
+    ctx_manager = global_semaphore if use_semaphore else asyncio.Lock()
+    async with ctx_manager:
+        for attempt in range(retries):
+            try: 
+                async with session.post(url, json=payload, timeout=timeout) as resp:
+                    if resp.status != 200:
+                        logger.error(f"Request failed with status {resp.status} — Prompt: {prompt[:60]!r}")
+                        return f"[Error {resp.status}]"
+                    else:
+                        logger.info(f"Connection successful. Response received for prompt starting with: {prompt[:40]!r}")
+                        data = await resp.json()
+                        logger.info("Successfully received model response.") 
+                        return data["content"].strip()
+            except Exception as e:
+                last_error = e
+                logger.warning(f"An error occurred during query: {e}. retry {attempt+1} of {retries}")
+                await asyncio.sleep(delay + random.uniform(0, 0.1))            
+        
     logger.error(f"Failed after {retries} retries for prompt start: {prompt[:40]!r}")
     FAILED_LOG.write_text(f"{prompt[:60]}\nError: {last_error}\n", encoding="utf-8")
     return f"[Error: {last_error}]"
@@ -121,17 +125,19 @@ async def summarise(text, tokeniser, session):
     else:
         logger.info("Oversized text detected. Splitting...")
         subchunks = split_by_tokens(tokeniser, text, 4096)
-        results = []
-        for i, sub in enumerate(subchunks):
+        async def summarise_subchunk(i, sub):
             sub_prompt = make_summary_prompt(sub)
             res = await query_llama(session, sub_prompt, MAX_TOKENS)
-            results.append(f"[Part {i}]{res}")
-        merged = "\n".join(results)
+            return f"[Part {i}]{res}"
+        
+        summarise_each = [summarise_subchunk(i, sub) for i, sub in enumerate(subchunks)]
+        results = await asyncio.gather(*summarise_each)
+        full = "\n".join(f"[Part {i}]{res}" for i, res in enumerate(results))
         final_prompt = f"""### Instruction:
 Summarize the following parts of a large text as a single cohesive summary.
 
 ### Parts:
-{merged}
+{full}
 
 ### Response:
 """
@@ -141,23 +147,25 @@ Summarize the following parts of a large text as a single cohesive summary.
 async def summarise_all(highlighted):
     tokeniser = get_tokeniser()
     summaries = {}
+    failed_summaries = []
     #adds progress bar
     pbar = tqdm(total=len(highlighted), desc="Summarizing")
     #switches to async for multiple requests
     async with aiohttp.ClientSession() as session:
         async def summarise_wrapper(i, text):
-            summary = await summarise(text, tokeniser, session)
-            logger.info(f"Summary {i+1}: {summary}\n")
-            summaries[f"chunk_{i}"] = summary
-            await asyncio.sleep(0.1)  # was time.sleep, now non-blocking!
+            try:
+                summary = await summarise(text, tokeniser, session)
+                summaries[f"chunk_{i}"] = summary
+            except Exception as e:
+                logger.error(f"error summarising chunk {i}: {e}")
+                failed_summaries.append(f"chunk_{i}")
             pbar.update(1)
-
-        tasks = [summarise_wrapper(i, text) for i, text in enumerate(highlighted)]
-        await asyncio.gather(*tasks)
+        summarise_each = [summarise_wrapper(i, text) for i, text in enumerate(highlighted)]
+        await asyncio.gather(*summarise_each)
+        await asyncio.sleep(0.1)  # was time.sleep, now non-blocking!
         pbar.close()
-
-    return summaries
-
+    gc.collect()
+    return summaries, failed_summaries
 
 if __name__ == "__main__":
     print("Script started", flush=True)
