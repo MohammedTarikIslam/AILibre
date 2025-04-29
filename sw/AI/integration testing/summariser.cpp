@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include <thread>
+#include <algorithm>
 #include <httplib.h>
 #include <nlohmann/json.hpp>
 
@@ -12,6 +13,7 @@ const int MAX_TOKENS = 128;
 const int MAX_CTX = 8192;  //match server --ctx-size
 const int NUM_PROCESSES = 5;
 
+std::int mode = 1;  // 1 = summariser, 2 = editing
 
 //input text
 const std::vector<std::string> highlighted =  ["Put 100g plain flour, 2 large eggs, 300ml milk, 1 tbsp sunflower or vegetable oil and a pinch of salt into a bowl or large jug, then whisk to a smooth batter. This should be similar in consistency to single cream.", 
@@ -40,22 +42,62 @@ std::vector<std::string> split_by_tokens(Llama& tokenizer, const std::string& te
     //pass by reference encoding not needed
     auto tokens = tokenizer.tokenize(text);
     std::vector<std::string> chunks;
-    //loops and jumps forwards by max_tokens and ends loop one chunk before the end
-    for (size_t start = 0; start < tokens.size(); start += max_tokens) {size_t end = std::min(start + max_tokens, tokens.size());
+    
+    int token_count = count_tokens(tokenizer, text);
+    // size_t token_limit = static_cast<size_t>(max_tokens * 0.75); // 75% of max tokens
+
+    if (token_count <= static_cast<int>(max_tokens)) {
+        chunks.push_back(trim(tokenizer.detokenize(tokens)));
+        return chunks;
+    }    
+    for (size_t start = 0; start < tokens.size(); ) {
+        size_t end = std::min(start + max_tokens, tokens.size());
+
+        //takes the chunk and detokenises it
         std::vector<int> chunk_tokens(tokens.begin() + start, tokens.begin() + end);
-        auto chunk_text = tokenizer.detokenize(chunk_tokens);
-        chunks.push_back(trim(chunk_text));}
+        std::string chunk_text = tokenizer.detokenize(chunk_tokens);
+
+        //reverse searchs for a newline
+        size_t split_pos = chunk_text.rfind('\n');
+        if (split_pos != std::string::npos && split_pos > (MAX_TOKENS* 0.75)) {
+            // If found a newline reasonably deep, split there
+            chunks.push_back(trim(chunk_text.substr(0, split_pos)));
+
+            // Retokenize leftover part after newline
+            std::string leftover_text = chunk_text.substr(split_pos);
+            auto leftover_tokens = tokenizer.tokenize(leftover_text);
+
+            // Move start forward by number of tokens we actually used
+            start += (end - start) - leftover_tokens.size();
+        } else {
+            // No good split found, just use full chunk
+            chunks.push_back(trim(chunk_text));
+            start = end; // Move normally
+        }
+    }
     return chunks;
 }
 
 //takes input and forms a full prompt for the model
-std::string make_summary_prompt(const std::string& text) {
-    return "### Instruction: \n"
-           " Read the text carefully and improve clarity, grammar, and style without changing the factual content.\n"
-           "Preserve formatting where possible.\n"
-           "correct any spelling mistakes and grammatical errors.\n"
-           "ensure the tense is consistent throughout.\n"
-           "### Text:\n" + text + "\n\n### Response:\n";
+std::string make_prompt(const std::string& text, const int mode) {
+    if (mode ==1){
+        return "### Instruction: \n"
+            " Read the text carefully and improve clarity, grammar, and style without changing the factual content.\n"
+            "Preserve formatting where possible.\n"
+            "correct any spelling mistakes and grammatical errors.\n"
+            "ensure the tense is consistent throughout.\n"
+            "### Text:\n" + text + "\n\n### Response:\n";
+    }
+else if (mode == 2){
+    return "### Instruction:\n"
+               "Read the text carefully and improve clarity, grammar, and style without changing the factual content.\n"
+               "Preserve formatting where possible.\n"
+               "Correct any spelling mistakes and grammatical errors.\n"
+               "Ensure the tense is consistent throughout.\n"
+               "### Text:\n" + text + "\n\n### Response:";
+} else {
+    return "invalid mode";
+}
 }
 
 
@@ -78,6 +120,7 @@ std::string query_llama(httplib::Client &client, const std::string prompt, int m
         {"top_k", 40},
         {"top_p", 0.95}
     };
+
     //attempts to contact the server
     for (int attempt = 0; attempt < retries; attempt++) {
         auto resp = client.Post(url, payload.dump(), "application/json");
@@ -87,20 +130,27 @@ std::string query_llama(httplib::Client &client, const std::string prompt, int m
                     auto data = nlohmann::json::parse(resp->body);
                     return data["content"].get<std::string>();
                 } else {
-                    return "[Error " + std::to_string(resp->status) + "]";
+                    std::cerr << "Request failed with status " << resp->status
+                              << " (attempt " << attempt << "/" << retries << ")\n";
+                    last_error = "[HTTP Status " + std::to_string(resp->status) + "]";
                 }
             } else {
                 last_error = httplib::to_string(resp.error());
+                std::cerr << "Request error: " << last_error
+                << " (attempt " << attempt << "/" << retries << ")\n";
             }
+        if (attempt < retries) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }    
+    }
     return "[Error: " + last_error + "]";
-    }    
 }
 
 
 // Main function
 std::string summarise(const std::string &text, Tokenizer &tokenizer, httplib::Client &client ) {
-    //handles oversied text
-    std::string prompt = make_summary_prompt(text);
+    //handles oversized text
+    std::string prompt = make_prompt(text, mode);
     int tokens = count_tokens(tokenizer, prompt);
 
     if (tokens < MAX_CTX - MAX_TOKENS - 256) {
