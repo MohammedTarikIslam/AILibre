@@ -17,64 +17,64 @@ std::int mode = 1;  // 1 = summariser, 2 = editing
 
 //input text
 const std::vector<std::string> highlighted =  ["Put 100g plain flour, 2 large eggs, 300ml milk, 1 tbsp sunflower or vegetable oil and a pinch of salt into a bowl or large jug, then whisk to a smooth batter. This should be similar in consistency to single cream.", 
-              "Set aside for 30 mins to rest if you have time, or start cooking straight away.", 
-              "Set a medium frying pan or crêpe pan over a medium heat and carefully wipe it with some oiled kitchen paper.",
-              "When hot, cook your pancakes for 1 min on each side until golden, using around half a ladleful of batter per pancake. Keep them warm in a low oven as you make the rest.",
-              "Serve with lemon wedges and caster sugar, or your favourite filling. Once cold, you can layer the pancakes between baking parchment, then wrap in cling film and freeze for up to two months."]
-
-//tokeniser logic
-static std::unique_ptr<Llama> _tokeniser = nullptr;
-Llama& get_tokeniser() {
-    if (!_tokeniser) {
-        _tokeniser = std::make_unique<Llama>(MODEL_PATH, MAX_CTX, /*vocab_only=*/true);
-    }
-    return *_tokeniser;
-}
-
-int count_tokens(Llama& tokeniser, const std::string& text) {
-    std::vector<int> tokens = tokeniser.tokenize(text);
-    return static_cast<int>(tokens.size());
-}
-
-//splits text into chunks when too large
-//future implementation should split by paragraph or pages
-std::vector<std::string> split_by_tokens(Llama& tokenizer, const std::string& text, size_t max_tokens) {
-    //pass by reference encoding not needed
-    auto tokens = tokenizer.tokenize(text);
-    std::vector<std::string> chunks;
+    "Set aside for 30 mins to rest if you have time, or start cooking straight away.", 
+    "Set a medium frying pan or crêpe pan over a medium heat and carefully wipe it with some oiled kitchen paper.",
+    "When hot, cook your pancakes for 1 min on each side until golden, using around half a ladleful of batter per pancake. Keep them warm in a low oven as you make the rest.",
+    "Serve with lemon wedges and caster sugar, or your favourite filling. Once cold, you can layer the pancakes between baking parchment, then wrap in cling film and freeze for up to two months."]
     
-    int token_count = count_tokens(tokenizer, text);
-    // size_t token_limit = static_cast<size_t>(max_tokens * 0.75); // 75% of max tokens
-
-    if (token_count <= static_cast<int>(max_tokens)) {
-        chunks.push_back(trim(tokenizer.detokenize(tokens)));
-        return chunks;
-    }    
-    for (size_t start = 0; start < tokens.size(); ) {
-        size_t end = std::min(start + max_tokens, tokens.size());
+    //tokeniser logic
+    static std::unique_ptr<Llama> _tokeniser = nullptr;
+    Llama& get_tokeniser() {
+        if (!_tokeniser) {
+            _tokeniser = std::make_unique<Llama>(MODEL_PATH, MAX_CTX, /*vocab_only=*/true);
+        }
+        return *_tokeniser;
+    }
+    
+    int count_tokens(Llama& tokeniser, const std::string& text) {
+        std::vector<int> tokens = tokeniser.tokenize(text);
+        return static_cast<int>(tokens.size());
+    }
+    
+    //splits text into chunks when too large
+    //future implementation should split by paragraph or pages
+    std::vector<std::string> split_by_tokens(Llama& tokenizer, const std::string& text, size_t max_tokens) {
+        //pass by reference encoding not needed
+        auto tokens = tokenizer.tokenize(text);
+        std::vector<std::string> chunks;
+        const int NEWLINE_TOKEN_ID = 13;
+        
+        size_t token_count = count_tokens(tokenizer, text);
+        
+        if (token_count <= static_cast<int>(max_tokens)) {
+            chunks.push_back(trim(tokenizer.detokenize(tokens)));
+            return chunks;
+        } 
+        
+        for (size_t start = 0; start < tokens.size(); ) {
+            size_t end = std::min(start + max_tokens, token_count);
+            
+            size_t split = end;
+            for (size_t i = end; i > start; --i) {
+                if (tokens[i - 1] == NEWLINE_TOKEN_ID) {
+                    if ((i - start) > 300) 
+                    { 
+                        split = i;
+                        break;
+                    }
+                }
+        }
 
         //takes the chunk and detokenises it
-        std::vector<int> chunk_tokens(tokens.begin() + start, tokens.begin() + end);
+        std::vector<int> chunk_tokens(tokens.begin() + start, tokens.begin() + split);
         std::string chunk_text = tokenizer.detokenize(chunk_tokens);
 
-        //reverse searchs for a newline
-        size_t split_pos = chunk_text.rfind('\n');
-        if (split_pos != std::string::npos && split_pos > (MAX_TOKENS* 0.75)) {
-            // If found a newline reasonably deep, split there
-            chunks.push_back(trim(chunk_text.substr(0, split_pos)));
 
-            // Retokenize leftover part after newline
-            std::string leftover_text = chunk_text.substr(split_pos);
-            auto leftover_tokens = tokenizer.tokenize(leftover_text);
+        chunks.push_back(chunk_text);
 
-            // Move start forward by number of tokens we actually used
-            start += (end - start) - leftover_tokens.size();
-        } else {
-            // No good split found, just use full chunk
-            chunks.push_back(trim(chunk_text));
-            start = end; // Move normally
-        }
+        start = split;
     }
+
     return chunks;
 }
 
