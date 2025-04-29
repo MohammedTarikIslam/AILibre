@@ -280,5 +280,3 @@ if __name__ == "__main__":
             print("All tasks completed successfully")
     else:
         print("no mode")
-
-
