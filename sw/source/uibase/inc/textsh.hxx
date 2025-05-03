@@ -69,6 +69,14 @@ public:
     void    ExecIdx(SfxRequest const &);
     void    GetIdxState(SfxItemSet &);
     void    ExecGlossary(SfxRequest &);
+    
+    void    ExecAISummarize(SfxRequest &);
+    void    ExecAIEdit(SfxRequest &);
+    void    ExecAIExtend(SfxRequest &);
+
+    void    ExecAISummarize(SfxRequest &rReq);
+    void    ExecAIEdit(SfxRequest &rReq);
+    void    ExecAIExtend(SfxRequest &rReq);
 
     void    ExecCharAttr(SfxRequest &);
     void    ExecCharAttrArgs(SfxRequest &);

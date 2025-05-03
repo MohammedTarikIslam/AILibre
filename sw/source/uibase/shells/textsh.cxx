@@ -92,7 +92,58 @@
 #include <formatcontentcontrol.hxx>
 #include <com/sun/star/i18n/WordType.hpp>
 
+#include "aihelper.hxx"
 
+
+#include <com/sun/star/text/XTextRange.hpp>
+#include <com/sun/star/text/XTextViewCursorSupplier.hpp>
+#include <com/sun/star/view/XSelectionSupplier.hpp>
+#include <com/sun/star/frame/XController.hpp>
+
+// Helper function: AI processing logic (dummy version for now)
+static OUString ProcessAICommand(const OUString& rSelectedText, const OUString& rCommandType)
+{
+    if (rCommandType == "summarize")
+        return "Summary: " + rSelectedText;
+    else if (rCommandType == "edit")
+        return "Edited: " + rSelectedText;
+    else if (rCommandType == "extend")
+        return rSelectedText + " ...continued";
+
+    return rSelectedText;
+}
+
+// Helper function: shared handler for all AI commands
+static void HandleAICommand(SfxRequest &rReq, const OUString& rCommandType)
+{
+    SfxViewShell* pViewShell = SfxViewShell::Current();
+    if (!pViewShell)
+        return;
+
+    // Get selection
+    css::uno::Reference<css::frame::XController> xController = pViewShell->GetController();
+    css::uno::Reference<css::view::XSelectionSupplier> xSelSupplier(xController, css::uno::UNO_QUERY);
+    if (!xSelSupplier.is())
+        return;
+
+    css::uno::Any aSelection = xSelSupplier->getSelection();
+    css::uno::Reference<css::text::XTextRange> xRange;
+    aSelection >>= xRange;
+
+    if (!xRange.is())
+        return;
+
+    // Get selected text
+    OUString rSelectedText = xRange->getString();
+
+    // Process with AI logic
+    OUString rResultText = ProcessAICommand(rSelectedText, rCommandType);
+
+    // Replace selection with result
+    xRange->setString(rResultText);
+}
+
+//soiatnseintoarientioraentrietn
 using namespace ::com::sun::star;
 
 SFX_IMPL_INTERFACE(SwTextShell, SwBaseShell)

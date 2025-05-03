@@ -120,6 +120,9 @@ class SwUINumRuleItem;
 #define FN_NEXT_BOOKMARK        (FN_EDIT + 68)  /*  */
 #define FN_PREV_BOOKMARK        (FN_EDIT + 69)  /*  */
 
+// ai implementation
+#define FN_AI_EDIT              (FN_EDIT + 70) /*uses the ai to edit the selected section*/
+
 #define FN_PAGENUMBER                (FN_EDIT + 80)  /**/
 
 #define FN_SELECT_PARA               (FN_EDIT + 97) /* select paragraph*/
@@ -344,6 +347,12 @@ class SwUINumRuleItem;
 #define FN_DELETE_SECTIONS (FN_INSERT2 + 41)
 #define FN_DELETE_CONTENT_CONTROL (FN_INSERT2 + 42) /* Delete content control formatting */
 #define FN_INSERT_FLD_RANGE_PGCOUNT (FN_INSERT2 + 43) /*insert field page count in range*/
+
+
+// AI implementation
+//Insert2 used as it is a local variable
+#define FN_AI_SUMMARISER        (FN_INSERT2 + 44) /*uses the ai to summarise the selected section*/
+#define FN_AI_EXtend            (FN_INSERT2 + 45) /*uses the ai to exxtend the selected section*/
 
 // Region: Format
 #define FN_AUTOFORMAT_APPLY     (FN_FORMAT + 1 ) /* apply autoformat options */

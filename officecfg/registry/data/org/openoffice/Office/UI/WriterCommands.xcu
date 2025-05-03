@@ -4432,6 +4432,21 @@
           <value>8</value>
         </prop>
       </node>
+      <node oor:name=".uno:SummarizeAI" oor:op="replace">
+        <prop oor:name="Label" oor:type="xs:string">
+          <value xml:lang="en-US">AI Summarize Selection</value>
+        </prop>
+      </node>
+      <node oor:name=".uno:EditAI" oor:op="replace">
+        <prop oor:name="Label" oor:type="xs:string">
+          <value xml:lang="en-US">AI Edit Selection</value>
+        </prop>
+      </node>
+      <node oor:name=".uno:ExtendAI" oor:op="replace">
+        <prop oor:name="Label" oor:type="xs:string">
+          <value xml:lang="en-US">AI Extend Selection</value>
+        </prop>
+      </node>
     </node>
   </node>
 </oor:component-data>
