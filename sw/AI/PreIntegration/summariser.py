@@ -13,7 +13,7 @@ import threading
 
 
 #Global variables
-MODEL_PATH = "/home/tarik8422/llama.cpp/models/deepseek-r1.gguf"
+MODEL_PATH = "/home/tarik8422/llama.cpp/models/deepseek-coder-33b-instruct.Q4_K_M.gguf"
 MAX_TOKENS = 128
 MAX_CTX = 8192  #match server --ctx-size
 NUM_PROCESSES = 5

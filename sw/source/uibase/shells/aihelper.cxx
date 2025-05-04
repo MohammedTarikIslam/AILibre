@@ -1,8 +1,10 @@
-#include "aihelper.hxx"
 #include <string>
 #include <sstream>
 #include <httplib.h>
 #include <nlohmann/json.hpp>
+
+//global variables
+const std::string MODEL_PATH = "/home/tarik8422/llama.cpp/models/deepseek-r1.gguf";
 
 //tokeniser logic
 static std::unique_ptr<Llama> _tokeniser = nullptr;
@@ -19,48 +21,54 @@ int count_tokens(Llama& tokeniser, const std::string& text) {
 }
 
 //splits text into chunks when too large
-std::vector<std::string> split_by_tokens(Llama& tokenizer, const std::string& text, size_t max_tokens) {
-    //pass by reference encoding not needed
-    auto tokens = tokenizer.tokenize(text);
+std::vector<std::string> split_text(const std::string& text, size_t max_chars) {
     std::vector<std::string> chunks;
-    const int NEWLINE_TOKEN_ID = 0x0A;
-    
-    size_t token_count = count_tokens(tokenizer, text);
-    
-    if (token_count <= static_cast<int>(max_tokens)) {
-        chunks.push_back(trim(tokenizer.detokenize(tokens)));
-        return chunks;
-    } 
-    for (size_t start = 0; start < tokens.size(); ) {
-        size_t end = std::min(start + max_tokens, token_count);
-        
-        size_t split = end;
-        for (size_t i = end; i > start; --i) {
-            if (tokens[i - 1] == NEWLINE_TOKEN_ID) {
-                if ((i - start) > 300) 
-                { 
-                    split = i;
-                    break;
+    size_t start = 0;
+    while (start < text.size()) {
+        size_t end = std::min(start + max_chars, text.size());
+        size_t split = text.rfind("\n\n", end);
+        size_t mid = start + (max_chars / 2);
+        if (split == std::string::npos || split <= mid) {
+            split = text.rfind("\n", end);
+            //if good new line not found find scentence end
+            if (split == std::string::npos || split <= mid) {
+                size_t p1 = text.rfind(".", end);
+                size_t p2 = text.rfind("!", end);
+                size_t p3 = text.rfind("?", end);
+                split = std::max({p1, p2, p3});
+
+                // No good sentence end found or too early = find word end
+                if (split == std::string::npos || split <= mid) {
+                    split = text.rfind(" ", end);
+
+                    // No good newline found or too early = hard split
+                    if (split == std::string::npos || split <= mid) {
+                        //cancels out split+1 later
+                        split = end - 1;
+                    }
                 }
             }
+        } else {
+            //if new paragraph found add the 2 new lines to chunk to give better next split
+            split = split + 1;
         }
-        //takes the chunk and detokenises it
-        std::vector<int> chunk_tokens(tokens.begin() + start, tokens.begin() + split);
-        std::string chunk_text = tokenizer.detokenize(chunk_tokens);
 
-        chunks.push_back(chunk_text);
+        //include punctuation in split
+        split = split + 1;
+        std::string chunk = text.substr(start, split - start);
+        chunks.push_back(chunk);
         start = split;
-    }
+            }
+
     return chunks;
 }
 
 //takes input and forms a full prompt for the model
 std::string make_prompt(const std::string& text, const std::string& command) {
-    
-    //converts to UTF8 for the ai to process it
+        //converts to UTF8 for the ai to process it
     if (command == "summarise"){
         return "### Instruction: \n" 
-                " Read the text carefully. Provide a concise but detailed summary that includes: \n" 
+                " Read the text carefully. Provide a concise summary that includes: \n"
                 " - Any important assertion, directive, commitment, emotion and declaration where they are applicable in bullet point format \n" 
                 " - If the text is only instructions, provide simpler short instructions in bullet point format with all details included \n" 
                 "### Text:\n" + text + "\n\n### Response:";
@@ -80,8 +88,19 @@ std::string make_prompt(const std::string& text, const std::string& command) {
 }
 
 
-OUString query_llama(httplib::Client &client, const std::string prompt)
+OUString query_llama(httplib::Client &client, const std::string &prompt)
 {
+    const int retries = 3;
+
+    client.set_connection_timeout(15);
+    client.set_read_timeout(60);
+    //delay removed due to libreoffice requirement
+    std::string last_error;
+    std::string bug;
+
+                                        // create code that changes n_predict based on the command
+                                        //n predict is the length of the output
+
     nlohmann::json payload = {
         {"prompt", prompt},
         {"stop", {"###"}},
@@ -90,58 +109,58 @@ OUString query_llama(httplib::Client &client, const std::string prompt)
         {"top_k", 40},
         {"top_p", 0.95}
     };
-    const int retries = 3;
-
-    const std::string url = "http://127.0.0.1:8080/completion";
-    client.set_connection_timeout(15);
-    client.set_read_timeout(60);
-    int delay = 1;
-    std::string last_error;
 
     //attempts to contact the server
     for (int attempt = 0; attempt < retries; attempt++) {
-        auto resp = client.Post(url, payload.dump(), "application/json");
+        auto resp = client.Post("/completion", payload.dump(), "application/json");
         if (resp) {
+            bug = resp->body;
             if (resp->status == 200) {
-                auto data = nlohmann::json::parse(resp->body);
-                std::string result = data["content"];
-                return OUString::fromUtf8(result.c_str());                
+                try {
+                    auto data = nlohmann::json::parse(resp->body);
+                    if (!data.contains("content") || !data["content"].is_string()) {
+                        //will change to libre accepted error message
+                        //throw std::runtime_error("Missing or bad ‘content’ field");
+                        continue;
+                    }
+                    std::string result = data["content"].get<std::string>();
+                    return OUString::fromUtf8(result.c_str());
+                }
+                catch (const std::exception &e) {
+                    last_error = std::string("JSON error: ") + e.what();
+                    continue;
+                }
             } else {
-                std::cerr << "Request failed with status " << resp->status
-                            << " (attempt " << attempt << "/" << retries << ")\n";
+                //std::cerr << "Request failed with status " << resp->status << " (attempt " << attempt << "/" << retries << ")\n";
                 last_error = "[HTTP Status " + std::to_string(resp->status) + "]";
             }
+            bug = resp->body;
         } else {
             last_error = httplib::to_string(resp.error());
-            std::cerr << "Request error: " << last_error
-            << " (attempt " << attempt << "/" << retries << ")\n";
+            //std::cerr << "Request error: " << last_error
+            //<< " (attempt " << attempt << "/" << retries << ")\n";
         }
-        if (attempt < retries) {
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        }    
+        //delay removed. not allowed by libreoffice
     }
-    return OUString::fromUtf8(("[Error: " + last_error + "]";).c_str());
-
+    return OUString::fromUtf8(("[Error: " + last_error + "]" + bug).c_str());
 }
 
-OUString chunker(const std::string &text, Tokenizer &tokenizer, httplib::Client &client , const std::string command) {
-    const int MAX_TOKENS = 128;
-    const int MAX_CTX = 8192;  //match server --ctx-size
+OUString chunker(const std::string &text, httplib::Client &client , const std::string command) {
+    //using estimation of 4 tokens per char
+    const int MAX_CTX_BYTES = 8192;  //leaves space on server for the prompt and response
 
-    // Build prompt
-    std::string prompt = make_prompt(text, command);
-    if (prompt == "invalid mode") {
-        return OUString::fromUtf8(text.c_str()); //fallback
-    } 
-    
     //handles oversized text
-    int tokens = count_tokens(tokenizer, text);
-    if (tokens < MAX_CTX - MAX_TOKENS - 256) {
+    if (text.size() < MAX_CTX_BYTES) {
+        // Build prompt and check for valid output
+        std::string prompt = make_prompt(text, command);
+        if (prompt == "invalid mode") {
+            return OUString::fromUtf8(text.c_str()); //fallback
+        }
         return query_llama(client, prompt);
     } 
     else {
-        std::cout << "Oversized text detected. Splitting...\n";
-        auto subchunks = split_by_tokens(tokenizer, text, 4096);
+        // std::cout << "Oversized text detected. Splitting...\n";
+        auto subchunks = split_text(text, MAX_CTX_BYTES);
         std::vector<std::string> results;
         std::string merged;
         for (size_t i = 0; i < subchunks.size(); ++i) {
@@ -158,17 +177,23 @@ OUString chunker(const std::string &text, Tokenizer &tokenizer, httplib::Client 
     "### Parts:\n" + merged + "\n\n### Response:\n";
 
     return query_llama(client, final_prompt);
-
     }
 }
 
 OUString ProcessAICommand(const OUString& rSelectedText, const OUString& rCommandType){
-
-    httplib::Client client("http://127.0.0.1:8080");
-    
-    std::string command = std::string(rCommandType.toUtf8());
+    httplib::Client client("127.0.0.1", 8080);
+        std::string command = std::string(rCommandType.toUtf8());
     std::string text = std::string(rSelectedText.toUtf8());
-    auto& tokenizer = get_tokeniser();
-
-    return chunker(text, tokenizer, client, command);
+    std::string result = chunker(text, client, command);
+    return OUString::fromUtf8(result.c_str());
 }
+
+int main() {
+    httplib::Client client("127.0.0.1", 8080);
+    std::string INPUT = "Here is the single block of text you want summarised.";
+    std::string summary = summarise(INPUT, client);
+    std::cout << summary << std::endl;
+    return 0;
+}
+
+
