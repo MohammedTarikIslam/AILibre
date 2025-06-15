@@ -170,7 +170,7 @@ def bootstrap(soffice=None, delays=(1, 3, 5, 7), report=lambda *args: None):
         if process:  # clean memory from soffice running process
             if platform.startswith("win") or platform == "darwin":
                 process.terminate()  # Send termination signal
-            elif platform == "linux":  
+            elif platform == "linux":
                 os.killpg(os.getpgid(process.pid), signal.SIGTERM)  # Send termination signal to process group
         raise BootstrapException
 

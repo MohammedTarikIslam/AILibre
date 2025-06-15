@@ -20,7 +20,7 @@ class CheckSidebar(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls._uno.tearDown() 
+        cls._uno.tearDown()
 
     def test_check_sidebar(self):
 
@@ -33,7 +33,7 @@ class CheckSidebar(unittest.TestCase):
         xSidebar.setVisible(True)
         self.assertTrue ( xSidebar.isVisible() )
 
-        # TODO: does not work in unit test context 
+        # TODO: does not work in unit test context
 #        xSidebar.setVisible(False)
 #        isVisible = xSidebar.isVisible()
 #        assert( not isVisible )

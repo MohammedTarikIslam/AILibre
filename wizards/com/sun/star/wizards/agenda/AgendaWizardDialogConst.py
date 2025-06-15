@@ -20,7 +20,7 @@ from ..common.HelpIds import HelpIds
 HID = 41051
 
 class AgendaWizardDialogConst:
-    
+
     TXTTITLE_TEXT_CHANGED = "txtTitleTextChanged"
     TXTDATE_TEXT_CHANGED = "txtDateTextChanged"
     TXTTIME_TEXT_CHANGED = "txtTimeTextChanged"

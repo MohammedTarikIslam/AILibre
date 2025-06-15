@@ -41,7 +41,7 @@ class CallWizard(unohelper.Base, XJobExecutor, XServiceInfo):
         except Exception as e:
             print ("Wizard failure exception " + str(type(e)) +
                    " message " + str(e) + " args " + str(e.args) +
-                   traceback.format_exc())              
+                   traceback.format_exc())
 
     @classmethod
     def callRemote(self):

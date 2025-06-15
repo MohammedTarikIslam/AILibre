@@ -72,7 +72,7 @@ def nsinstall(argv):
   # implented.
   def BadArg(option, opt, value, parser):
     parser.error('option not supported: %s' % opt)
-    
+
   p.add_option('-C', action="callback", metavar="CWD",
                callback=BadArg,
                help="NOT SUPPORTED")

@@ -26,7 +26,7 @@ class ImporterTestCase(unittest.TestCase):
       def __init__(self,method,ctx):
           unittest.TestCase.__init__(self,method)
           self.ctx = ctx
-          
+
       def setUp(self):
           self.tobj = self.ctx.ServiceManager.createInstanceWithContext( \
                            "com.sun.star.test.bridge.CppTestObject",self.ctx)
@@ -34,7 +34,7 @@ class ImporterTestCase(unittest.TestCase):
       def testStandard( self ):
           self.assertTrue( IllegalArgumentException is not None, "none-test" )
           self.assertRaises( IllegalArgumentException, self.tobj.raiseException, 1,"foo",self.tobj)
-                 
+
           self.assertTrue( TWO == uno.Enum( "test.testtools.bridgetest.TestEnum","TWO"), "enum" )
           self.assertTrue( UNSIGNED_LONG == uno.Enum( "com.sun.star.uno.TypeClass", "UNSIGNED_LONG" ) )
           self.assertTrue( typeOfIllegalArgumentException ==

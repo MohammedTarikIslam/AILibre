@@ -30,7 +30,7 @@ class SequenceOutputStream( unohelper.Base, XOutputStream ):
       def __init__( self ):
           self.s = uno.ByteSequence("")
           self.closed = 0
-          
+
       def closeOutput(self):
           self.closed = 1
 
@@ -42,18 +42,18 @@ class SequenceOutputStream( unohelper.Base, XOutputStream ):
 
       def getSequence( self ):
           return self.s
-          
-                  
+
+
 class SequenceInputStream( XInputStream, unohelper.Base ):
       def __init__( self, seq ):
           self.s = seq
           self.nIndex = 0
           self.closed = 0
-          
+
       def closeInput( self):
           self.closed = 1
           self.s = None
-          
+
       def skipBytes( self, nByteCount ):
           if( nByteCount + self.nIndex > len(self.s) ):
               nByteCount = len(self.s) - self.nIndex
@@ -68,18 +68,18 @@ class SequenceInputStream( XInputStream, unohelper.Base ):
           retSeq = uno.ByteSequence(self.s.value[self.nIndex : self.nIndex + nRet ])
           self.nIndex = self.nIndex + nRet
           return nRet, retSeq
-          
+
       def readSomeBytes( self, retSeq , nByteCount ):
           #as we never block !
           return readBytes( retSeq, nByteCount )
-          
+
       def available( self ):
           return len( self.s ) - self.nIndex
 
 class SequenceInputStream2( SequenceInputStream ):
       def __init__( self, seq ):
             SequenceInputStream.__init__( self, seq )
-            
+
 class TestCase(unittest.TestCase):
       def __init__(self,method,ctx):
           unittest.TestCase.__init__(self,method)
@@ -90,7 +90,7 @@ class TestCase(unittest.TestCase):
                            "com.sun.star.test.bridge.CppTestObject",self.ctx)
           self.pipe = self.ctx.ServiceManager.createInstanceWithContext( \
                            "com.sun.star.io.Pipe" , self.ctx )
-                           
+
       def testStandard( self ):
           dataOut = self.ctx.ServiceManager.createInstanceWithContext( \
                         "com.sun.star.io.DataOutputStream", self.ctx )
@@ -102,7 +102,7 @@ class TestCase(unittest.TestCase):
 
           dataInput = self.ctx.ServiceManager.createInstanceWithContext( \
                    "com.sun.star.io.DataInputStream", self.ctx )
-          
+
           dataInput.setInputStream( SequenceInputStream2( streamOut.getSequence() ) )
 
           self.assertTrue( 42 == dataInput.readShort() )
@@ -113,12 +113,12 @@ class TestCase(unittest.TestCase):
 class NullDevice:
       def write( self, string ):
             pass
-      
+
 
 class EventListener( unohelper.Base, XEventListener ):
     def __init__( self ):
         self.disposingCalled = False
-        
+
     def disposing( self , eventObject ):
         self.disposingCalled = True
 
@@ -149,7 +149,7 @@ class TestHelperCase( unittest.TestCase ):
             smgr = uno.getComponentContext().ServiceManager.createInstance(
                   "com.sun.star.lang.ServiceManager" )
 
-            # check, whether listeners 
+            # check, whether listeners
             listener = EventListener()
             smgr.addEventListener( listener )
             smgr.dispose()
@@ -163,7 +163,7 @@ class TestHelperCase( unittest.TestCase ):
             smgr.removeEventListener( listener )
             smgr.dispose()
             self.assertTrue( not listener.disposingCalled )
-            
+
       def testCurrentContext( self ):
             oldContext = uno.getCurrentContext()
             try:
@@ -173,8 +173,8 @@ class TestHelperCase( unittest.TestCase ):
                   self.assertTrue( uno.getCurrentContext().getValueByName( "My43" ) is None )
             finally:
                   uno.setCurrentContext( oldContext )
-          
-            
+
+
 
 def suite( ctx ):
     suite = unittest.TestSuite()
@@ -184,4 +184,4 @@ def suite( ctx ):
     suite.addTest(TestHelperCase( "testListener" ) )
     suite.addTest(TestHelperCase( "testCurrentContext" ) )
     return suite
-                                           
+

@@ -66,10 +66,10 @@ def assign( rData, bBool, cChar, nByte, nShort, nUShort, nLong, nULong, nHyper,\
 class PythonTransporter:
     def __init__( self ):
         pass
-    
+
     def transportAny( self, arg ):
         return arg
-        
+
 class TestCase( unittest.TestCase):
 
       def __init__(self,method,ctx):
@@ -78,7 +78,7 @@ class TestCase( unittest.TestCase):
 
       def setUp(self):
          # the testcomponent from the testtools project
-         self.tobj = self.ctx.ServiceManager.createInstanceWithContext( 
+         self.tobj = self.ctx.ServiceManager.createInstanceWithContext(
                                 'com.sun.star.test.bridge.CppTestObject' , self.ctx )
 
          self.tobj.Bool = 1
@@ -126,7 +126,7 @@ class TestCase( unittest.TestCase):
           self.assertTrue( 42 == self.tobj.transportAny( 42 ), "transportAny long" )
           self.assertTrue( "woo, this is python" == self.tobj.transportAny( "woo, this is python" ), \
                   "string roundtrip via any test"  )
-           
+
       def testEnum( self ):
           e1 = uno.Enum( "com.sun.star.uno.TypeClass" , "LONG" )
           e2 = uno.Enum( "com.sun.star.uno.TypeClass" , "LONG" )
@@ -161,7 +161,7 @@ class TestCase( unittest.TestCase):
           self.tobj.Bool = uno.Bool(0)
           self.assertTrue( not self.tobj.Bool , "bool true attribute test" )
 
-          # new boolean semantic 
+          # new boolean semantic
           self.assertTrue( id( self.tobj.transportAny( True ) ) == id(True)  , "boolean preserve test")
           self.assertTrue( id( self.tobj.transportAny( False ) ) == id(False) , "boolean preserve test" )
           self.assertTrue( id( self.tobj.transportAny(1) ) != id( True ), "boolean preserve test" )
@@ -191,7 +191,7 @@ class TestCase( unittest.TestCase):
           uni = u'\0148'
           self.tobj.String = uni
           self.assertTrue( uni == self.tobj.String )
-          
+
 
           self.tobj.String = u'dubidu'
           self.assertTrue( u'dubidu' == self.tobj.String , "unicode comparison test")
@@ -228,7 +228,7 @@ class TestCase( unittest.TestCase):
           except unoExc:
                 wasHere = 1
           self.assertTrue(wasHere, "exception test 3")
-    
+
           illegalArg = uno.getClass( "com.sun.star.lang.IllegalArgumentException" )
           wasHere = 0
           try:
@@ -243,13 +243,13 @@ class TestCase( unittest.TestCase):
           else:
                 self.assertTrue( 0, "except test 5c" )
                 self.assertTrue( wasHere, "illegal argument exception test failed" )
-                  
+
       def testInterface(self):
           clazz = uno.getClass( "com.sun.star.lang.XComponent" )
           self.assertTrue( "com.sun.star.lang.XComponent" == clazz.__pyunointerface__ )
           self.assertTrue( issubclass( clazz, uno.getClass( "com.sun.star.uno.XInterface" ) ) )
           self.tobj.Interface = None
-           
+
 
       def testOutparam( self):
           # outparameter
@@ -276,7 +276,7 @@ class TestCase( unittest.TestCase):
           self.assertTrue(myseq == self.tobj.Sequence, "outparam 17 test")
           self.assertTrue(my2ndstruct == struct, "outparam 18 test")
 
-# should work, debug on windows, why not    
+# should work, debug on windows, why not
 #    struct, mybool,mychar,mybyte,myshort,myushort,mylong,myulong,myhyper,myuhyper,myfloat,\
 #              mydouble,myenum,mystring,myinterface,myany,myseq,my2ndstruct = self.tobj.setValues2( \
 #             mybool,mychar,mybyte,myshort,myushort,mylong,myulong,myhyper,myuhyper,myfloat,\
@@ -309,7 +309,7 @@ class TestCase( unittest.TestCase):
           except AttributeError:
                  wasHere = 1
           except IllegalArgumentException:
-                 wasHere = 1     
+                 wasHere = 1
           self.assertTrue( wasHere, "wrong attribute test" )
 
           IllegalArgumentException = uno.getClass("com.sun.star.lang.IllegalArgumentException" )
@@ -344,7 +344,7 @@ class TestCase( unittest.TestCase):
           self.assertTrue( s == uno.ByteSequence( s ) )
           self.assertTrue( s[0] == 'a' )
           self.assertTrue( s[1] == 'b' )
-          
+
 
       def testInvoke( self ):
           self.assertTrue( 5 == uno.invoke( self.tobj , "transportAny" , (uno.Any("byte", 5),) ) )
@@ -354,5 +354,5 @@ class TestCase( unittest.TestCase):
           mystruct = uno.createUnoStruct(
               "com.sun.star.beans.PropertyValue", "foo",0,uno.Any(t,2),0 )
           mystruct.Value = uno.Any(t, 1)
-          
-          
+
+

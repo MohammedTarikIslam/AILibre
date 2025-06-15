@@ -441,7 +441,7 @@ class TopicsControl(ControlScroller):
     sets focus to the given control.
     @param textControl
     '''
-    
+
     def focus(self, textControl):
         textControl.setFocus()
         text = textControl.Text

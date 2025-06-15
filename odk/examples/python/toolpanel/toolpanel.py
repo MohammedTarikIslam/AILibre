@@ -77,7 +77,7 @@ class pyPanel( unohelper.Base, XUIElement ):
                 s = pip.getPackageLocation(extensionID)
                 dialogUrl = s + "/" + xdlPath
 
-                provider = self.ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.ContainerWindowProvider",self.ctx)  
+                provider = self.ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.ContainerWindowProvider",self.ctx)
                 self.m_panelRootWindow = provider.createContainerWindow(dialogUrl,"",self.xParentWindow, None)
 
                 return self.m_panelRootWindow
@@ -132,7 +132,7 @@ g_ImplementationHelper = unohelper.ImplementationHelper ()
 # add the FormatFactory class to the implementation container,
 # which the loader uses to register/instantiate the component.
 g_ImplementationHelper.addImplementation (pocFactory,
-					implementation_name,
-					implementation_services,
-					)
+                    implementation_name,
+                    implementation_services,
+                    )
 

@@ -38,7 +38,7 @@ class SpinFieldTest(UITestCase):
 
                 decimal_places_state = get_state_as_dict(xDecimalPlaces)
                 assert(decimal_places_state["Text"] == "3")
-        
+
                 xDecimalPlaces.executeAction("DOWN", tuple())
 
                 decimal_places_state = get_state_as_dict(xDecimalPlaces)
@@ -51,7 +51,7 @@ class SpinFieldTest(UITestCase):
         with self.ui_test.create_doc_in_start_center("calc"):
 
             with self.ui_test.execute_dialog_through_command(".uno:FormatCellDialog") as xCellsDlg:
-        
+
                 xDecimalPlaces = xCellsDlg.getChild("leadzerosed")
                 type_text(xDecimalPlaces, "4")
 

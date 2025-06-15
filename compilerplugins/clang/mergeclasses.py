@@ -8,7 +8,7 @@ definitionToFileDict = {}
 with open("workdir/loplugin.mergeclasses.log") as txt:
     for line in txt:
         tokens = line.strip().split("\t")
-    
+
         if len(tokens) == 1:
             pass
 
@@ -21,14 +21,14 @@ with open("workdir/loplugin.mergeclasses.log") as txt:
             if (clazzName.startswith("::")):
                 clazzName = clazzName[2:]
             instantiatedSet.add(clazzName)
-            
+
         elif tokens[0] == "definition:":
             clazzName = tokens[1]
             # the 1.. is so we skip the leading /
             fileName  = tokens[2][1:]
             definitionSet.add(clazzName)
             definitionToFileDict[clazzName] = fileName
-            
+
         elif tokens[0] == "has-subclass:":
             child  = tokens[1]
             parent = tokens[2]

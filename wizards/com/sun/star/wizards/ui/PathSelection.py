@@ -134,4 +134,4 @@ class PathSelection(object):
 
     def callXPathSelectionListener(self):
             if self.xAction is not None:
-                self.xAction.validatePath()      
+                self.xAction.validatePath()
