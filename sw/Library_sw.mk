@@ -19,6 +19,8 @@
 
 $(eval $(call gb_Library_Library,sw))
 
+$(eval $(call gb_Library_use_sdk_api,sw,))
+
 $(eval $(call gb_Library_add_sdi_headers,sw,sw/sdi/swslots))
 
 $(eval $(call gb_Library_set_componentfile,sw,sw/util/sw,services))
@@ -29,6 +31,7 @@ $(eval $(call gb_Library_set_include,sw,\
     -I$(SRCDIR)/sw/source/core/inc \
     -I$(SRCDIR)/sw/source/filter/inc \
     -I$(SRCDIR)/sw/source/uibase/inc \
+    -I$(SRCDIR)/sw/source/uibase/app/aihelper \
     -I$(SRCDIR)/sw/inc \
     -I$(WORKDIR)/SdiTarget/sw/sdi \
     $$(INCLUDE) \
@@ -595,6 +598,7 @@ $(eval $(call gb_Library_add_exception_objects,sw,\
     sw/source/filter/xml/xmltexti \
     sw/source/filter/indexing/IndexingExport \
     sw/source/filter/indexing/IndexingExportFilter \
+    sw/source/uibase/app/aihelper/aihelper \
     sw/source/uibase/app/appenv \
     sw/source/uibase/app/apphdl \
     sw/source/uibase/app/applab \

@@ -31,32 +31,45 @@ using ::com::sun::star::uno::Reference;
 
 static Reference<frame::XModel> getModel(const Reference<uno::XComponentContext>& xContext)
 {
-    auto xMSF
-        = Reference<lang::XMultiServiceFactory>(xContext->getServiceManager(), UNO_QUERY_THROW);
+    auto xMSF = Reference<lang::XMultiServiceFactory>(xContext->getServiceManager());
 
     auto xDesktop = Reference<frame::XDesktop>(
-        xMSF->createInstanceWithContext("com.sun.star.frame.Desktop", xContext), UNO_QUERY_THROW);
+        xMSF->createInstanceWithContext("com.sun.star.frame.Desktop", xContext));
 
-    auto xComp = Reference<lang::XComponent>(xDesktop->getCurrentComponent(), UNO_QUERY_THROW);
+    auto xComp = Reference<lang::XComponent>(xDesktop->getCurrentComponent());
 
-    return Reference<frame::XModel>(xComp, UNO_QUERY_THROW);
+    return Reference<frame::XModel>(xComp);
 }
 
 //getter and setter
 OUString get_selected()
 {
     Reference<uno::XComponentContext> xContext = comphelper::getProcessComponentContext();
-    auto xModel = getModel(xContext);
+    // get the Desktop service
+    mxRemoteServiceManager = this.getRemoteServiceManager(unoUrl);
+
+    Object desktop = mxRemoteServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop",
+                                                                      mxRemoteContext);
+
+    // query its XDesktop interface, we need the current component
+    XDesktop xDesktop = UnoRuntime.queryInterface(XDesktop.class, desktop);
+
+    auto xCurrentComponent = xDesktop.getCurrentComponent();
+
+    auto xModel = UnoRuntime.queryInterface(XModel.class, xCurrentComponent);
+
     //gets the current controller for the open doc
     uno::Reference<frame::XController> xCtrl = xModel->getCurrentController();
 
     //search for the view-cursor supplier
-    uno::Reference<text::XTextViewCursorSupplier> xVCS(xCtrl, uno::UNO_QUERY_THROW);
+    uno::Reference<text::XTextViewCursorSupplier> xVCS
+        = UnoRuntime.queryInterface(XTextViewCursorSupplier.class, xController);
 
     //get the view cursor
-    uno::Reference<text::XTextViewCursor> xVC = xVCS->getViewCursor();
+    uno::Reference<text::XTextViewCursor> xVC = xVCS.getViewCursor();
 
     //read the selected text
+    //
     return xVC->getString();
 }
 

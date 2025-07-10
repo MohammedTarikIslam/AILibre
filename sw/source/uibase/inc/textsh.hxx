@@ -30,13 +30,13 @@ class SwFlyFrameAttrMgr;
 class SvxHyperlinkItem;
 class SwInsertChart;
 
-class SW_DLLPUBLIC SwTextShell: public SwBaseShell
+class SW_DLLPUBLIC SwTextShell : public SwBaseShell
 {
     RotateTransliteration m_aRotateCase;
 
-    void InsertSymbol( SfxRequest& );
-    void InsertHyperlink( const SvxHyperlinkItem& rHlnkItem );
-    bool InsertMediaDlg( SfxRequest const & );
+    void InsertSymbol(SfxRequest&);
+    void InsertHyperlink(const SvxHyperlinkItem& rHlnkItem);
+    bool InsertMediaDlg(SfxRequest const&);
 
 public:
     SFX_DECL_INTERFACE(SW_TEXTSHELL)
@@ -46,49 +46,42 @@ private:
     static void InitInterface_Impl();
 
 public:
-    DECL_DLLPRIVATE_LINK( RedlineNextHdl, AbstractSvxPostItDialog&, void );
-    DECL_DLLPRIVATE_LINK( RedlinePrevHdl, AbstractSvxPostItDialog&, void );
-    DECL_DLLPRIVATE_STATIC_LINK( SwTextShell, DialogClosedHdl, css::ui::dialogs::DialogClosedEvent*, void );
+    DECL_DLLPRIVATE_LINK(RedlineNextHdl, AbstractSvxPostItDialog&, void);
+    DECL_DLLPRIVATE_LINK(RedlinePrevHdl, AbstractSvxPostItDialog&, void);
+    DECL_DLLPRIVATE_STATIC_LINK(SwTextShell, DialogClosedHdl, css::ui::dialogs::DialogClosedEvent*,
+                                void);
 
-    void    Execute(SfxRequest &);
-    void    GetState(SfxItemSet &);
+    void Execute(SfxRequest&);
+    void GetState(SfxItemSet&);
 
-    void    ExecInsert(SfxRequest &);
-    void    StateInsert(SfxItemSet&);
-    void    ExecDelete(SfxRequest &);
-    void    ExecEnterNum(SfxRequest &);
-    void    ExecBasicMove(SfxRequest &);
-    void    ExecMove(SfxRequest &);
-    void    ExecMovePage(SfxRequest &);
-    void    ExecMoveCol(SfxRequest &);
-    void    ExecMoveLingu(SfxRequest &);
-    void    ExecMoveMisc(SfxRequest &);
-    void    ExecField(SfxRequest &rReq);
-    void    ExecSetNumber(SfxRequest const &);
-    void    StateField(SfxItemSet &);
-    void    ExecIdx(SfxRequest const &);
-    void    GetIdxState(SfxItemSet &);
-    void    ExecGlossary(SfxRequest &);
-    
-    void    ExecAISummarize(SfxRequest &);
-    void    ExecAIEdit(SfxRequest &);
-    void    ExecAIExtend(SfxRequest &);
+    void ExecInsert(SfxRequest&);
+    void StateInsert(SfxItemSet&);
+    void ExecDelete(SfxRequest&);
+    void ExecEnterNum(SfxRequest&);
+    void ExecBasicMove(SfxRequest&);
+    void ExecMove(SfxRequest&);
+    void ExecMovePage(SfxRequest&);
+    void ExecMoveCol(SfxRequest&);
+    void ExecMoveLingu(SfxRequest&);
+    void ExecMoveMisc(SfxRequest&);
+    void ExecField(SfxRequest& rReq);
+    void ExecSetNumber(SfxRequest const&);
+    void StateField(SfxItemSet&);
+    void ExecIdx(SfxRequest const&);
+    void GetIdxState(SfxItemSet&);
+    void ExecGlossary(SfxRequest&);
 
-    void    ExecAISummarize(SfxRequest &rReq);
-    void    ExecAIEdit(SfxRequest &rReq);
-    void    ExecAIExtend(SfxRequest &rReq);
+    void ExecCharAttr(SfxRequest&);
+    void ExecCharAttrArgs(SfxRequest&);
+    void ExecParaAttr(SfxRequest&);
+    void ExecParaAttrArgs(SfxRequest&);
+    void ExecDB(SfxRequest const&);
+    void ExecTransliteration(SfxRequest&);
+    void ExecRotateTransliteration(SfxRequest&);
 
-    void    ExecCharAttr(SfxRequest &);
-    void    ExecCharAttrArgs(SfxRequest &);
-    void    ExecParaAttr(SfxRequest &);
-    void    ExecParaAttrArgs(SfxRequest &);
-    void    ExecDB(SfxRequest const &);
-    void    ExecTransliteration(SfxRequest &);
-    void    ExecRotateTransliteration(SfxRequest &);
+    void GetAttrState(SfxItemSet&);
 
-    void    GetAttrState(SfxItemSet &);
-
-             SwTextShell(SwView &rView);
+    SwTextShell(SwView& rView);
     virtual ~SwTextShell() override;
     /// Create item set for the insert frame dialog.
     std::shared_ptr<SfxItemSet> CreateInsertFrameItemSet(SwFlyFrameAttrMgr& rMgr);
