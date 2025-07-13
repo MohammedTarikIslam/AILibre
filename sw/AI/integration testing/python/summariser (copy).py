@@ -241,93 +241,93 @@ async def query_llama(session, prompt, max_tokens, retries=3, use_semaphore=True
 #         # box.execute()
 
 
-# Main function
-async def text_proc(all_text, results_dict, progress_counter, progress_lock, worker_id):
-    try:
-        # initial sleep to stagger start
-        #         potentially an issue with pausing
-        # await asyncio.sleep(worker_id * 0.1)
+# # Main function
+# async def text_proc(all_text, results_dict, progress_counter, progress_lock, worker_id):
+#     try:
+#         # initial sleep to stagger start
+#         #         potentially an issue with pausing
+#         # await asyncio.sleep(worker_id * 0.1)
 
-        async with aiohttp.ClientSession() as session:
-            while True:
-                try:
-                    texts = all_text.get_nowait()
-                except Exception:
-                    # empty queue
-                    break
+#         async with aiohttp.ClientSession() as session:
+#             while True:
+#                 try:
+#                     texts = all_text.get_nowait()
+#                 except Exception:
+#                     # empty queue
+#                     break
 
-                i, text = texts
-                # logger.info(f"Worker {worker_id} processing chunk {i}")
+#                 i, text = texts
+#                 # logger.info(f"Worker {worker_id} processing chunk {i}")
 
-                tokens = count_tokens(tokeniser, text)
-                if tokens > MAX_CTX - MAX_TOKENS - 256:
-                    try:
-                        logger.info("Oversized text detected. Splitting...")
-                        subchunks = split_text(tokeniser, text, 4096)
+#                 tokens = count_tokens(tokeniser, text)
+#                 if tokens > MAX_CTX - MAX_TOKENS - 256:
+#                     try:
+#                         logger.info("Oversized text detected. Splitting...")
+#                         subchunks = split_text(tokeniser, text, 4096)
 
-                        # summarises each subchunk
-                        async def process_subchunk(index, sub):
-                            if mode == "edit":
-                                sub_prompt = make_edit_prompt(sub)
-                            elif mode == "summary":
-                                sub_prompt = make_summary_prompt(sub)
+#                         # summarises each subchunk
+#                         async def process_subchunk(index, sub):
+#                             if mode == "edit":
+#                                 sub_prompt = make_edit_prompt(sub)
+#                             elif mode == "summary":
+#                                 sub_prompt = make_summary_prompt(sub)
 
-                            res = await query_llama(session, sub_prompt, MAX_TOKENS)
-                            return f"[Part {index}]{res}"
+#                             res = await query_llama(session, sub_prompt, MAX_TOKENS)
+#                             return f"[Part {index}]{res}"
 
-                        process_each = [
-                            process_subchunk(idx, sub)
-                            for idx, sub in enumerate(subchunks)
-                        ]
-                        results = await asyncio.gather(*process_each)
-                        full = "\n".join(
-                            f"[Part {i}]{res}" for i, res in enumerate(results)
-                        )
+#                         process_each = [
+#                             process_subchunk(idx, sub)
+#                             for idx, sub in enumerate(subchunks)
+#                         ]
+#                         results = await asyncio.gather(*process_each)
+#                         full = "\n".join(
+#                             f"[Part {i}]{res}" for i, res in enumerate(results)
+#                         )
 
-                        final_prompt = f"""### Instruction:
-                Summarize the following parts of a large text as a single cohesive summary.
+#                         final_prompt = f"""### Instruction:
+#                 Summarize the following parts of a large text as a single cohesive summary.
 
-                ### Parts:
-                {full}
+#                 ### Parts:
+#                 {full}
 
-                ### Response:
-                """
-                        full_result = await query_llama(
-                            session, final_prompt, MAX_TOKENS
-                        )
-                        results_dict[i] = full_result
-                    except Exception as e:
-                        logger.error(
-                            f"Worker {worker_id} failed on oversized text {i}: {e}"
-                        )
-                        results_dict[i] = "[ERROR]"
-                else:
-                    try:
-                        if mode == "edit":
-                            prompt = make_edit_prompt(text)
-                        elif mode == "summary":
-                            prompt = make_summary_prompt(text)
-                        summary = await query_llama(session, prompt, MAX_TOKENS)
-                        results_dict[i] = summary
-                    except Exception as e:
-                        logger.error(f"Worker {worker_id} failed on text {i}: {e}")
-                        results_dict[i] = "[ERROR]"
-                with progress_lock:
-                    progress_counter.value += 1
-                gc.collect()
-        logger.info(f"Worker {worker_id} finished processing")
-    except Exception as e:
-        ctx = XSCRIPTCONTEXT.getComponentContext()
-        smgr = ctx.ServiceManager
-        toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
-        parent = toolkit.getDesktopWindow()
-        box = toolkit.createMessageBox(
-            parent, MESSAGEBOX, MSG_BUTTONS.BUTTONS_OK, "textproc error", e
-        )
-        box.execute()
-    placeholder = "This is a placeholder for the text processing function."
-    return placeholder
-    # insert_debug_line(placeholder)
+#                 ### Response:
+#                 """
+#                         full_result = await query_llama(
+#                             session, final_prompt, MAX_TOKENS
+#                         )
+#                         results_dict[i] = full_result
+#                     except Exception as e:
+#                         logger.error(
+#                             f"Worker {worker_id} failed on oversized text {i}: {e}"
+#                         )
+#                         results_dict[i] = "[ERROR]"
+#                 else:
+#                     try:
+#                         if mode == "edit":
+#                             prompt = make_edit_prompt(text)
+#                         elif mode == "summary":
+#                             prompt = make_summary_prompt(text)
+#                         summary = await query_llama(session, prompt, MAX_TOKENS)
+#                         results_dict[i] = summary
+#                     except Exception as e:
+#                         logger.error(f"Worker {worker_id} failed on text {i}: {e}")
+#                         results_dict[i] = "[ERROR]"
+#                 with progress_lock:
+#                     progress_counter.value += 1
+#                 gc.collect()
+#         logger.info(f"Worker {worker_id} finished processing")
+#     except Exception as e:
+#         ctx = XSCRIPTCONTEXT.getComponentContext()
+#         smgr = ctx.ServiceManager
+#         toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
+#         parent = toolkit.getDesktopWindow()
+#         box = toolkit.createMessageBox(
+#             parent, MESSAGEBOX, MSG_BUTTONS.BUTTONS_OK, "textproc error", e
+#         )
+#         box.execute()
+#     placeholder = "This is a placeholder for the text processing function."
+#     return placeholder
+#     # insert_debug_line(placeholder)
 
 
 # adds progress bar
