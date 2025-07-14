@@ -21,13 +21,10 @@ import queue
 MODEL_PATH = "/home/tarik8422/llama.cpp/models/deepseek-coder-33b-instruct.Q4_K_M.gguf"
 MAX_TOKENS = 128
 # match server --ctx-size
-MAX_CHARS = 40
 MAX_CTX = 8192
-NUM_PROCESSES = 5
 # num of paragraphs or pages
 BATCH_SIZE = 5
 global_semaphore = asyncio.Semaphore(5)
-mode = "edit"
 
 
 # region for logging
@@ -145,16 +142,6 @@ ensure the tense is consistent throughout.
 
 # server query function
 async def query_llama(session, prompt, max_tokens, retries=3, use_semaphore=True):
-    ctx = XSCRIPTCONTEXT.getComponentContext()
-    smgr = ctx.ServiceManager
-    toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
-    parent = toolkit.getDesktopWindow()
-    box = toolkit.createMessageBox(
-        parent, MESSAGEBOX, MSG_BUTTONS.BUTTONS_OK, "Notice", " starting summariser "
-    )
-    box.execute()
-
-    # logger.info(f"starting summariser {prompt[:40]!r}")
 
     # default server location
     url = "http://127.0.0.1:8080/completion"
@@ -241,92 +228,71 @@ async def query_llama(session, prompt, max_tokens, retries=3, use_semaphore=True
     #         # box.execute()
 
     # # Main function
-    # async def text_proc(all_text, results_dict, progress_counter, progress_lock, worker_id):
+
+
+async def text_proc(
+    index, i, text, results_dict, progress_counter, progress_lock, worker_id
+):
+    mode = "edit"
     try:
         # initial sleep to stagger start
         #         potentially an issue with pausing
-        placeholder = "11111111111111111111111111111"
+        placeholder = ["1xxxxxxxxxxxxx", 1, 1]
 
         await asyncio.sleep(worker_id * 0.1)
 
         async with aiohttp.ClientSession() as session:
-            while True:
-                try:
-                    placeholder = "333333333333333333333333333"
-                    i, text = all_text.get(timeout=1)
-                except queue.Empty:
-                    # empty queue
-                    placeholder = "failed 3333333333333333333"
+            placeholder = ["133333333333", 1, 1]
+        # while True:
+        #     try:
+        #         placeholder = ["133333333333", 1, 1]
+        #         # i, text = all_text.get(timeout=1)
+        #         # response = text
+        #         # if response is None or len(response) != 3:
+        #         #     placeholder = ["failed response had wrong values", 1, 1]
+        #         #     return placeholder
+        #         # index, i, text = response
+        #     except asyncio.TimeoutError:
+        #         # timeout error
+        #         placeholder = ["failed 1333333333333 timeout", worker_id, 1]
+        #         return placeholder
+        #     except Exception as e:
+        #         # other exception
+        #         placeholder = ["failed 1333333333333", worker_id, e]
+        #         return placeholder
+        #     except queue.Empty:
+        #         # empty queue
+        #         placeholder = ["failed 133333333 queue empty", worker_id, 1]
+        #         return placeholder
 
-                try:
-                    placeholder = "222222222222222222222222"
-                    tokens = len(text.split())
-                    if tokens > MAX_CTX - MAX_TOKENS - 256:
-                        try:
-                            logger.info("Oversized text detected. Splitting...")
-                            subchunks = split_text(tokeniser, text, 4096)
-
-                            # summarises each subchunk
-                            async def process_subchunk(index, sub):
-                                if mode == "edit":
-                                    sub_prompt = make_edit_prompt(sub)
-                                elif mode == "summary":
-                                    sub_prompt = make_summary_prompt(sub)
-
-                                res = await query_llama(session, sub_prompt, MAX_TOKENS)
-                                return f"[Part {index}]{res}"
-
-                            process_each = [
-                                process_subchunk(idx, sub)
-                                for idx, sub in enumerate(subchunks)
-                            ]
-                            results = await asyncio.gather(*process_each)
-                            full = "\n".join(
-                                f"[Part {i}]{res}" for i, res in enumerate(results)
-                            )
-
-                            final_prompt = f"""### Instruction:
-                    Summarize the following parts of a large text as a single cohesive summary.
-
-                    ### Parts:
-                    {full}
-
-                    ### Response:
-                    """
-                            full_result = await query_llama(
-                                session, final_prompt, MAX_TOKENS
-                            )
-                            results_dict[i] = full_result
-                        except Exception as e:
-                            insert_debug_line(
-                                f"Worker {worker_id} failed on oversized text {i}: {e}"
-                            )
-                            results_dict[i] = "[ERROR]"
-                    else:
-                        try:
-                            if mode == "edit":
-                                prompt = make_edit_prompt(text)
-                            elif mode == "summary":
-                                prompt = make_summary_prompt(text)
-                            summary = await query_llama(session, prompt, MAX_TOKENS)
-                            results_dict[i] = summary
-                        except Exception as e:
-                            insert_debug_line(
-                                f"Worker {worker_id} failed on text {i}: {e}"
-                            )
-                            results_dict[i] = "[ERROR]"
-                    with progress_lock:
-                        progress_counter.value += 1
-                    gc.collect()
-                    insert_debug_line(f"Worker {worker_id} finished processing")
-                except Exception as e:
-                    placeholder = "failed 222222222222222222222222"
-                    insert_debug_line(f"Worker {worker_id} error: {e}")
+        try:
+            placeholder = ["failed 12222222222222", 1, 1]
+            try:
+                placeholder = ["success tryyyyyyyyyyyyy ", 1, 1]
+                if mode == "edit":
+                    prompt = make_edit_prompt(text)
+                elif mode == "summary":
+                    prompt = make_summary_prompt(text)
+                placeholder = [index, i, prompt]
+                # ai_response = await query_llama(session, prompt, MAX_TOKENS)
+                # results_dict[i] = summary
+            except Exception as e:
+                placeholder = ["tryyyyyyyyyyyyy ", 1, 1]
+                return placeholder
+                # results_dict[i] = "[ERROR]"  88888888888888888888888
+            with progress_lock:
+                progress_counter[0] += 1
+            # gc.collect()
+            placeholder = ["finished tryyyyyyyyyyyyy ", 1, 1]
+        except Exception as e:
+            placeholder = ["failed 12222222222222", 1, 1]
+            return placeholder
+            # insert_debug_line(f"Worker {worker_id} error: {e}")
         return placeholder
-        # insert_debug_line(placeholder)
     except Exception as e:
-        placeholder = "11111111111111111111111111111"
-        insert_debug_line(f"Worker {worker_id} error: {e}")
+        # placeholder = ["failed 1xxxxxxxxxxxxx", 1, 1]
+        return placeholder
+        # insert_debug_line(f"Worker {worker_id} error: {e}")
 
 
 # adds progress bar
@@ -348,30 +314,44 @@ def worker_thread(
 ):
     while True:
         try:
-            i, text = all_text_queue.get(timeout=1)
+            index, i, text = all_text_queue.get(timeout=1)
+            # result = ["failed 6666666666666666", 1, 1]
+            result = [index, i, text]
+            # text_new
+            result = asyncio.run(
+                text_proc(
+                    index,
+                    i,
+                    text,
+                    results_dict,
+                    progress_counter,
+                    progress_lock,
+                    thread_id,
+                )
+            )
+            # result = [index, i, text_new]
+            with progress_lock:
+                results_dict[index] = result
+                progress_counter[0] += 1
+            all_text_queue.task_done()
+        except queue.Empty:
+            # empty queue
+            break
         except Exception as e:
-            result = "failed 6666666666666666"
-        # except queue.Empty:
-        #     break
-        # result = asyncio.run(
-        #     text_proc(text, results_dict, progress_counter, progress_lock, thread_id)
-        # )
-        try:
-            i, text = all_text_queue.get_nowait()
-            result = f"5 {i} {text}"
-        except Exception as e:
-            result = "failed 555555555555555555"
-        # result = "exit worker thread"
-        with progress_lock:
-            results_dict[i] = result
-            progress_counter[0] += 1
-        all_text_queue.task_done()
+            # result = [index, i, text]
+            result = ["failed 6666666666666666", e, 1]
+            with progress_lock:
+                results_dict[index] = result
+                progress_counter[0] += 1
+            all_text_queue.task_done()
 
 
+####################################### redo comment ########################################
 # summarises all text in the list
-# async
 async def alltext_proc(highlighted):
+    NUM_PROCESSES = 5
     try:
+        result = ["failed 6666666666666666", 1, 1]
         insert_debug_line("entering alltext_proc")
         # check to see if alltextproc starts
         ctx = XSCRIPTCONTEXT.getComponentContext()
@@ -379,21 +359,18 @@ async def alltext_proc(highlighted):
         toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
         parent = toolkit.getDesktopWindow()
 
-        # await asyncio.sleep(5)
-        # highlighted = [("abc", 1), ("def", 2), ("ghi", 3)]
-
-        # manager = multiprocessing.Manager()
         alltext_queue = queue.Queue()
 
-        # creates tuples (index, text)
-        for i, text in highlighted:
-            alltext_queue.put((i, text))
+        # creates tuples (index, i, text)
+        for index, (i, text) in enumerate(highlighted):
+            alltext_queue.put((index, i, text))
 
         num_tasks = len(highlighted)
         results_dict = {}
         # creates progress bar
         progress_counter = [0]
         progress_lock = threading.Lock()
+
         progress_thread = threading.Thread(
             target=progress_monitor, args=(num_tasks, progress_counter)
         )
@@ -401,6 +378,7 @@ async def alltext_proc(highlighted):
         # sets up multiprocessing
 
         threads = []
+
         for i in range(NUM_PROCESSES):
             t = threading.Thread(
                 target=worker_thread,
@@ -415,21 +393,21 @@ async def alltext_proc(highlighted):
 
         sorted_results = [results_dict[i] for i in sorted(results_dict)]
 
-        result = dict(results_dict)
-
+        result = results_dict.copy()
+        box = toolkit.createMessageBox(
+            parent, MESSAGEBOX, MSG_BUTTONS.BUTTONS_OK, "all text proc", "1111"
+        )
+        box.execute()
         # output results
-        for i, result in enumerate(sorted_results):
-            placeholder = f"arst {i}: {result}"
-            insert_debug_line(f"Placeholder {i}: {sorted_results[i]}")
-            box = toolkit.createMessageBox(
-                parent,
-                MESSAGEBOX,
-                MSG_BUTTONS.BUTTONS_OK,
-                "alltext_proc",
-                "for loop",
-            )
-            box.execute()
+        insert_debug_line("alltext_proc results:")
+        insert_debug_line(str(sorted_results))
+        for index, i, text in sorted_results:
+            insert_debug_line(f"Result {index} {i}: {text}")
 
+        box = toolkit.createMessageBox(
+            parent, MESSAGEBOX, MSG_BUTTONS.BUTTONS_OK, "all text proc", "2222"
+        )
+        box.execute()
         placeholder = result
 
         box = toolkit.createMessageBox(
@@ -441,10 +419,9 @@ async def alltext_proc(highlighted):
         )
         box.execute()
 
-        # insert_debug_line(placeholder)
         insert_debug_line("alltext_proc completed successfully")
 
-        return dict(results_dict), []
+        return result, []
 
     except Exception as e:
         ctx = XSCRIPTCONTEXT.getComponentContext()
@@ -461,26 +438,20 @@ async def alltext_proc(highlighted):
 
 
 def send_to_ai(highlighted):
+    mode = "edit"
     ctx = XSCRIPTCONTEXT.getComponentContext()
     smgr = ctx.ServiceManager
     toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
     parent = toolkit.getDesktopWindow()
-
-    # will no longer work as highlighteted isnt a list of strings
-    # fulltext = " ".join(highlighted)
+    insert_debug_line("edit mode")
 
     if mode == "edit":
         insert_debug_line("edit mode")
 
-        # asyncio.run(alltext_proc())
-
         results, failed = asyncio.run(alltext_proc(highlighted))
-        # failed = []
-        # results = []
 
         if failed != []:
             # error printing an array
-            # insert_debug_line("Reached posrt alltext_proc")
             box = toolkit.createMessageBox(
                 parent,
                 MESSAGEBOX,
@@ -507,7 +478,7 @@ def send_to_ai(highlighted):
                 MESSAGEBOX,
                 MSG_BUTTONS.BUTTONS_OK,
                 "Notice",
-                failedstr + "failed to procsess",
+                str(failedstr) + "failed to procsess",
             )
             box.execute()
         else:
@@ -520,19 +491,13 @@ def send_to_ai(highlighted):
             )
             box.execute()
 
-        # summaries, failed = asyncio.run(alltext_proc(highlighted))
-        # # print("\n Summaries:", summaries)
-        # if failed != []:
-        #     print("Failed to process:", failed)
-        # else:
-        #     print("All tasks completed successfully")
     else:
         box = toolkit.createMessageBox(
             parent,
             MESSAGEBOX,
             MSG_BUTTONS.BUTTONS_OK,
             "Notice",
-            highlighted + "no mode",
+            f"{highlighted} + no mode",
         )
         box.execute()
 
@@ -540,7 +505,8 @@ def send_to_ai(highlighted):
 # entry point of code
 # sends selected text to processing
 def send_selected_text_to_ai():
-    # try:
+    MAX_CHARS = 40
+
     # Get the current document and view cursor
     xDoc = XSCRIPTCONTEXT.getDocument()
     xController = xDoc.getCurrentController()
@@ -553,19 +519,15 @@ def send_selected_text_to_ai():
 
     selected_text = []
     if hasattr(view_cursor, "getCount") and view_cursor.getCount() > 1:
-        # insert_debug_line("get count")
-        # multi_selection = True
+        insert_debug_line("get count")
         for i in range(1, view_cursor.getCount()):
             # starts at 1. quirk of libreoffice
             text = view_cursor.getByIndex(i).getString()
             selected_text.append(text)
-            # insert_debug_line(text + " " + str(i))
     elif hasattr(view_cursor, "getCount") and view_cursor.getCount() == 1:
-        # insert_debug_line("get string")
-        # multi_selection = False
+        insert_debug_line("get string")
         text = view_cursor.getByIndex(0).getString()
         selected_text.append(text)
-        # insert_debug_line(text + " " + str(0))
     else:
         selected_text = ""
 
@@ -589,82 +551,16 @@ def send_selected_text_to_ai():
             "arst",
         )
         box.execute()
-        # for i in range(len(selected_text)):
-        #     # starts at 1. quirk of libreoffice
-        #     box = toolkit.createMessageBox(
-        #         parent,
-        #         MESSAGEBOX,
-        #         MSG_BUTTONS.BUTTONS_OK,
-        #         "sending selected text to AI",
-        #         selected_text[i],
-        #     )
-        #     box.execute()
 
-    # cut_text = split_text(selected_text, 2048)
     insert_debug_line("sending selected text to ai")
 
     selected_cut = []
     for i in range(len(selected_text)):
         cut_text = split_text(selected_text[i], MAX_CHARS)
-        for chunk in cut_text:
-            # insert_debug_line(f".........{i}: {chunk} \n")
-            selected_cut.append((i, chunk))
-
-    for i, text in selected_cut:
-        # starts at 1. quirk of libreoffice
-        box = toolkit.createMessageBox(
-            parent,
-            MESSAGEBOX,
-            MSG_BUTTONS.BUTTONS_OK,
-            "sending selected text to AI",
-            text,
-        )
-        box.execute()
-
-    # wouldnt work on
-    # insert_debug_line(selected_cut)
+        for text in cut_text:
+            selected_cut.append((i, text))
 
     send_to_ai(selected_cut)
-
-    # selected = [selection.getByIndex(i).getString() for i in range(selection.getCount())]
-
-    # splits the chunks into smaller parts if they are too large
-    # highlighted = []
-    # highlighted = cut_text
-
-    # except Exception as e:
-    #     box = toolkit.createMessageBox(
-    #         parent,
-    #         MESSAGEBOX,
-    #         MSG_BUTTONS.BUTTONS_OK,
-    #         "Error",
-    #         e,
-    #     )
-    #     box.execute()
-    #     print("Error during macro execution:", e)
-
-    # region DELETE MAYBE IESTNATRIENTOKYUWNPIUNEITNRIETNOIETNISTENSIONAIERTNOENTOEANRIETSRNIOTEN
-
-    #     # Prepare AI request
-    #     url = "http://localhost:5000/api"
-    #     headers = {"Content-Type": "application/json"}
-    #     payload = {"input": selected_text}
-
-    #     # Send request to AI backend
-    #     response = requests.post(url, data=json.dumps(payload), headers=headers)
-
-    #     if response.status_code == 200:
-    #         result = response.json().get("output", "")
-    #         if result:
-    #             # Replace selected text with AI output
-    #             view_cursor.setString(result)
-    #             print("Text replaced with AI response.")
-    #         else:
-    #             print("AI returned no output.")
-    #     else:
-    #         print(f"AI request failed: {response.status_code}")
-
-    # endregion
 
 
 g_exportedScripts = (send_selected_text_to_ai,)
