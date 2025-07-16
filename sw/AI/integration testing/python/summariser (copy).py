@@ -20,6 +20,8 @@ import threading
 import queue
 import subprocess
 import time
+import psutil
+import requests
 
 # Global variables
 MODEL_PATH = "/home/tarik8422/llama.cpp/models/deepseek-coder-33b-instruct.Q4_K_M.gguf"
@@ -57,19 +59,43 @@ def run_ai():
         if ai_process is None:
             return "Failed to start AI process: got None"
         text_box("AI Status", f"AI started with PID {ai_process.pid}")
-        # wait for the ai to start up
-        time.sleep(3)
         return f"AI started with PID {ai_process.pid}"
     except Exception as e:
         return f"Failed to start AI process: {str(e)}"
 
 
+def wait_for_ai_server(host="127.0.0.1", port=8080, timeout=20):
+    url = f"http://{host}:{port}/v1/models"
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        try:
+            response = requests.get(url, timeout=2)
+            if response.status_code == 200:
+                return True
+        except requests.exceptions.RequestException:
+            pass
+        time.sleep(0.5)
+    return False
+
+
 def stop_ai():
     global ai_process
     if ai_process and ai_process.poll() is None:
-        ai_process.kill()
-        ai_process.wait()
-        return "AI process terminated"
+        try:
+            parent = psutil.Process(ai_process.pid)
+            children = parent.children(recursive=True)
+            for child in children:
+                child.terminate()
+                child.kill()
+            parent.terminate()
+            parent.kill()
+            ai_process.wait()
+            return f"AI process with PID {ai_process.pid} terminated"
+            # ai_process.terminate()
+            # ai_process.kill()
+            # ai_process.wait()
+        except Exception as e:
+            return f"Failed to terminate AI process: {str(e)}"
     else:
         return "No running AI process to kill"
 
@@ -214,52 +240,6 @@ async def query_llama(session, prompt, max_tokens, retries=3, use_semaphore=True
     last_error(f"Failed after {retries} retries for prompt start: {prompt[:40]!r}")
     logger.error(f"{prompt}\n Error: {last_error}\n")
     return f"[Error: {last_error}]"
-
-    # high chance this is not needed anymore
-
-    # # starmap doesnt accept async
-    # def text_proc_entry(all_text, results_dict, progress_counter, progress_lock, worker_id):
-    #     try:
-    #         with open("/tmp/debug_ai_macro.log", "a") as f:
-    #             f.write(f"[{worker_id}] Reached checkpoint\n")
-
-    #         # insert_debug_line("Reached textprocentry")
-    #         #
-    #         # ctx = XSCRIPTCONTEXT.getComponentContext()
-    #         # smgr = ctx.ServiceManager
-    #         # toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
-    #         # parent = toolkit.getDesktopWindow()
-
-    #         # box = toolkit.createMessageBox(
-    #         #     parent,
-    #         #     MESSAGEBOX,
-    #         #     MSG_BUTTONS.BUTTONS_OK,
-    #         #     "alltext_proc",
-    #         #     "rsoitebsobeinbioesrbreinnbsirobne",
-    #         # )
-    #         # box.execute()
-
-    #         # asyncio.run(
-    #         #     text_proc(
-    #         #         all_text, results_dict, progress_counter, progress_lock, worker_id
-    #         #     )
-    #         # )
-    #     except Exception as e:
-    #         with open("/tmp/ai_macro_debug.log", "a") as f:
-    #             f.write(f"[{worker_id}] Exception in text_proc_entry: {str(e)}\n")
-    #         #
-    #         # insert_debug_line("textproc entry error")
-    #         #
-    #         # ctx = XSCRIPTCONTEXT.getComponentContext()
-    #         # smgr = ctx.ServiceManager
-    #         # toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
-    #         # parent = toolkit.getDesktopWindow()
-    #         # box = toolkit.createMessageBox(
-    #         #     parent, MESSAGEBOX, MSG_BUTTONS.BUTTONS_OK, "textproc entry error", e
-    #         # )
-    #         # box.execute()
-
-    # # Main function
 
 
 async def text_proc(
@@ -411,16 +391,10 @@ async def alltext_proc(highlighted):
         )
         box.execute()
         # output results
-        # insert_debug_line("Results:")
-        # insert_debug_line(str(sorted_results))
         for index, i, text in sorted_results:
             insert_debug_line(f"Result {index} {i}: {text}")
 
         placeholder = result
-
-        stop_ai()
-
-        # insert_debug_line("alltext_proc completed successfully")
 
         return result, []
 
@@ -441,6 +415,13 @@ def send_to_ai(highlighted):
     toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
     parent = toolkit.getDesktopWindow()
 
+    if not wait_for_ai_server():
+        text_box(
+            "AI Server Error",
+            "AI server is not running. Please start the AI server before using this feature.",
+        )
+        return
+
     box = toolkit.createMessageBox(
         parent,
         # uno.createUnoStruct("com.sun.star.awt.Rectangle"),
@@ -449,26 +430,24 @@ def send_to_ai(highlighted):
         "Choose AI Mode",
         "Click YES Summarise mode [default] or NO Edit mode",
     )
-
     mode = box.execute()
+
+    results, failed = asyncio.run(alltext_proc(highlighted))
+    failedstr = ", ".join(failed)
+
+    ai = stop_ai()
+    text_box("AI Status", f"AI stopped: {ai}")
 
     if mode == 2:
         text_box("AI Mode", "Edit mode selected. Click OK to continue.")
 
-        results, failed = asyncio.run(alltext_proc(highlighted))
-        failedstr = ", ".join(failed)
-
-        ai = stop_ai()
-        text_box("AI Status", f"AI stopped: {ai}")
-
         if failed != []:
-            # error printing an array
             text_box("Error", f"{failedstr} failed to process")
         else:
             text_box("Processing completed", "All tasks completed successfully")
     elif mode == 3:
         text_box("AI Mode", "Summarise mode selected. Click OK to continue.")
-        summaries, failed = asyncio.run(alltext_proc(highlighted))
+
         if failed != []:
             text_box("Error", f"{failedstr} failed to process")
         else:
@@ -481,12 +460,9 @@ def send_to_ai(highlighted):
 # entry point of code
 # sends selected text to processing
 def send_selected_text_to_ai():
-    MAX_CHARS = 4000
+    MAX_CHARS = 1500
 
     ai = run_ai()
-
-    # insert_debug_line(f"AI started: {ai}")
-
     text_box("AI Status", f"AI started: {ai}")
 
     # Get the current document and view cursor
@@ -501,13 +477,11 @@ def send_selected_text_to_ai():
 
     selected_text = []
     if hasattr(view_cursor, "getCount") and view_cursor.getCount() > 1:
-        # insert_debug_line("get count")
         for i in range(1, view_cursor.getCount()):
             # starts at 1. quirk of libreoffice
             text = view_cursor.getByIndex(i).getString()
             selected_text.append(text)
     elif hasattr(view_cursor, "getCount") and view_cursor.getCount() == 1:
-        # insert_debug_line("get string")
         text = view_cursor.getByIndex(0).getString()
         selected_text.append(text)
     else:
