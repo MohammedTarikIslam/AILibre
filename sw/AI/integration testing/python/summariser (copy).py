@@ -1,21 +1,25 @@
 import uno
 from com.sun.star.awt import MessageBoxButtons as MSG_BUTTONS
 from com.sun.star.awt.MessageBoxType import MESSAGEBOX
+from com.sun.star.awt.MessageBoxButtons import BUTTONS_YES_NO
+from com.sun.star.awt.MessageBoxResults import YES, NO
 import requests
 import json
 import asyncio
 import logging
 import random
 import gc
+import socket
 import time
 from tqdm import tqdm
 import aiohttp
 import orjson
 from pathlib import Path
 from llama_cpp import Llama
-import multiprocessing
 import threading
 import queue
+import subprocess
+import time
 
 # Global variables
 MODEL_PATH = "/home/tarik8422/llama.cpp/models/deepseek-coder-33b-instruct.Q4_K_M.gguf"
@@ -25,6 +29,7 @@ MAX_CTX = 8192
 # num of paragraphs or pages
 BATCH_SIZE = 5
 global_semaphore = asyncio.Semaphore(5)
+ai_process = None
 
 
 # region for logging
@@ -43,33 +48,53 @@ logger = logging.getLogger(__name__)
 # endregion
 
 
+# runs the AI model in a separate process
+def run_ai():
+    try:
+        global ai_process
+        command = "source ~/llama_env/bin/activate && ./run_llama.sh"
+        ai_process = subprocess.Popen(["bash", "-c", command])
+        if ai_process is None:
+            return "Failed to start AI process: got None"
+        text_box("AI Status", f"AI started with PID {ai_process.pid}")
+        # wait for the ai to start up
+        time.sleep(3)
+        return f"AI started with PID {ai_process.pid}"
+    except Exception as e:
+        return f"Failed to start AI process: {str(e)}"
+
+
+def stop_ai():
+    global ai_process
+    if ai_process and ai_process.poll() is None:
+        ai_process.kill()
+        ai_process.wait()
+        return "AI process terminated"
+    else:
+        return "No running AI process to kill"
+
+
 def insert_debug_line(line):
     try:
         doc = XSCRIPTCONTEXT.getDocument()
         text = doc.Text
         controller = doc.getCurrentController()
         view_cursor = controller.getViewCursor()
-        text.insertString(view_cursor, "[DEBUG] " + line + "\n", 0)
+        text.insertString(view_cursor, "[DEBUG] " + line + "\n\n", 0)
     except:
         pass
 
 
-# region for tokeniser logic
+def text_box(title, text):
+    ctx = XSCRIPTCONTEXT.getComponentContext()
+    smgr = ctx.ServiceManager
+    toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
+    parent = toolkit.getDesktopWindow()
 
-
-# _tokeniser = None
-
-# def get_tokeniser():
-#     global _tokeniser
-#     if _tokeniser is None:
-#         _tokeniser = Llama(model_path=MODEL_PATH, n_ctx=MAX_CTX, vocab_only=True)
-#     return _tokeniser
-
-
-# def count_tokens(tokeniser, text):
-#     return len(tokeniser.tokenize(text.encode("utf-8")))
-
-# endregion
+    box = toolkit.createMessageBox(
+        parent, MESSAGEBOX, MSG_BUTTONS.BUTTONS_OK, title, text
+    )
+    box.execute()
 
 
 # splits text into chunks when too large
@@ -157,6 +182,7 @@ async def query_llama(session, prompt, max_tokens, retries=3, use_semaphore=True
     }
 
     # attempts to contact the server
+    test = "query worked"
     ctx_manager = global_semaphore if use_semaphore else asyncio.Lock()
     async with ctx_manager:
         for attempt in range(retries):
@@ -166,20 +192,26 @@ async def query_llama(session, prompt, max_tokens, retries=3, use_semaphore=True
                         logger.error(
                             f"Request failed with status {resp.status} — Prompt: {prompt[:60]!r}"
                         )
+                        # test = "failed response"
+                        # return test
                         return f"[Error {resp.status}]"
                     else:
                         # logger.info(f"Connection successful. Response received for prompt starting with: {prompt[:40]!r}")
                         data = await resp.json(loads=orjson.loads)
                         logger.info("Successfully received model response.")
+                        # test = "query worked"
+                        # return test
                         return data["content"].strip()
             except Exception as e:
                 last_error = e
+                # test = "exception occurred"
+                await asyncio.sleep(delay + random.uniform(0, 0.1))
+                # return test
                 logger.warning(
                     f"An error occurred during query: {e}. retry {attempt+1} of {retries}"
                 )
-                await asyncio.sleep(delay + random.uniform(0, 0.1))
 
-    logger.error(f"Failed after {retries} retries for prompt start: {prompt[:40]!r}")
+    last_error(f"Failed after {retries} retries for prompt start: {prompt[:40]!r}")
     logger.error(f"{prompt}\n Error: {last_error}\n")
     return f"[Error: {last_error}]"
 
@@ -233,60 +265,40 @@ async def query_llama(session, prompt, max_tokens, retries=3, use_semaphore=True
 async def text_proc(
     index, i, text, results_dict, progress_counter, progress_lock, worker_id
 ):
-    mode = "edit"
+    mode = "summary"
     try:
         # initial sleep to stagger start
         #         potentially an issue with pausing
-        placeholder = ["1xxxxxxxxxxxxx", 1, 1]
+        placeholder = [1, 1, "1xxxxxxxxxxxxx"]
 
         await asyncio.sleep(worker_id * 0.1)
 
         async with aiohttp.ClientSession() as session:
-            placeholder = ["133333333333", 1, 1]
-        # while True:
-        #     try:
-        #         placeholder = ["133333333333", 1, 1]
-        #         # i, text = all_text.get(timeout=1)
-        #         # response = text
-        #         # if response is None or len(response) != 3:
-        #         #     placeholder = ["failed response had wrong values", 1, 1]
-        #         #     return placeholder
-        #         # index, i, text = response
-        #     except asyncio.TimeoutError:
-        #         # timeout error
-        #         placeholder = ["failed 1333333333333 timeout", worker_id, 1]
-        #         return placeholder
-        #     except Exception as e:
-        #         # other exception
-        #         placeholder = ["failed 1333333333333", worker_id, e]
-        #         return placeholder
-        #     except queue.Empty:
-        #         # empty queue
-        #         placeholder = ["failed 133333333 queue empty", worker_id, 1]
-        #         return placeholder
-
-        try:
-            placeholder = ["failed 12222222222222", 1, 1]
+            placeholder = [1, 1, "133333333333"]
             try:
-                placeholder = ["success tryyyyyyyyyyyyy ", 1, 1]
-                if mode == "edit":
-                    prompt = make_edit_prompt(text)
-                elif mode == "summary":
-                    prompt = make_summary_prompt(text)
-                placeholder = [index, i, prompt]
-                # ai_response = await query_llama(session, prompt, MAX_TOKENS)
-                # results_dict[i] = summary
+                placeholder = [1, 1, "try 12222222222222"]
+                try:
+                    placeholder = [1, 1, "success tryyyyyyyyyyyyy "]
+                    if mode == "edit":
+                        prompt = make_edit_prompt(text)
+                    elif mode == "summary":
+                        prompt = make_summary_prompt(text)
+                    placeholder = [index, i, prompt]
+                    ai_response = await query_llama(session, prompt, MAX_TOKENS)
+                    placeholder = [index, i, ai_response]
+                    # results_dict[i] = summary
+                except Exception as e:
+                    placeholder = [1, 1, "tryyyyyyyyyyyyy "]
+                    placeholder = [index, i, ai_response]
+                    return placeholder
+                    # results_dict[i] = "[ERROR]"  88888888888888888888888
+                with progress_lock:
+                    progress_counter[0] += 1
+                # gc.collect()
+                # placeholder = ["finished tryyyyyyyyyyyyy ", 1, 1]
             except Exception as e:
-                placeholder = ["tryyyyyyyyyyyyy ", 1, 1]
+                # placeholder = [1, 1, "failed 12222222222222"]
                 return placeholder
-                # results_dict[i] = "[ERROR]"  88888888888888888888888
-            with progress_lock:
-                progress_counter[0] += 1
-            # gc.collect()
-            placeholder = ["finished tryyyyyyyyyyyyy ", 1, 1]
-        except Exception as e:
-            placeholder = ["failed 12222222222222", 1, 1]
-            return placeholder
             # insert_debug_line(f"Worker {worker_id} error: {e}")
         return placeholder
     except Exception as e:
@@ -352,7 +364,7 @@ async def alltext_proc(highlighted):
     NUM_PROCESSES = 5
     try:
         result = ["failed 6666666666666666", 1, 1]
-        insert_debug_line("entering alltext_proc")
+        # insert_debug_line("entering alltext_proc")
         # check to see if alltextproc starts
         ctx = XSCRIPTCONTEXT.getComponentContext()
         smgr = ctx.ServiceManager
@@ -395,31 +407,20 @@ async def alltext_proc(highlighted):
 
         result = results_dict.copy()
         box = toolkit.createMessageBox(
-            parent, MESSAGEBOX, MSG_BUTTONS.BUTTONS_OK, "all text proc", "1111"
+            parent, MESSAGEBOX, MSG_BUTTONS.BUTTONS_OK, "processing text", "1111"
         )
         box.execute()
         # output results
-        insert_debug_line("alltext_proc results:")
-        insert_debug_line(str(sorted_results))
+        # insert_debug_line("Results:")
+        # insert_debug_line(str(sorted_results))
         for index, i, text in sorted_results:
             insert_debug_line(f"Result {index} {i}: {text}")
 
-        box = toolkit.createMessageBox(
-            parent, MESSAGEBOX, MSG_BUTTONS.BUTTONS_OK, "all text proc", "2222"
-        )
-        box.execute()
         placeholder = result
 
-        box = toolkit.createMessageBox(
-            parent,
-            MESSAGEBOX,
-            MSG_BUTTONS.BUTTONS_OK,
-            "alltext_proc",
-            "part 3 post for loop",
-        )
-        box.execute()
+        stop_ai()
 
-        insert_debug_line("alltext_proc completed successfully")
+        # insert_debug_line("alltext_proc completed successfully")
 
         return result, []
 
@@ -428,84 +429,65 @@ async def alltext_proc(highlighted):
         smgr = ctx.ServiceManager
         toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
         parent = toolkit.getDesktopWindow()
-        box = toolkit.createMessageBox(
-            parent, MESSAGEBOX, MSG_BUTTONS.BUTTONS_OK, "all text proc Error", str(e)
-        )
-        box.execute()
+        text_box("all text proc Error", str(e))
         # insert_debug_line("alltext proc error")
-        logger.error(f"Error in alltext_proc: {e}")
+        # logger.error(f"Error in alltext_proc: {e}")
         return {}, [str(e)]
 
 
 def send_to_ai(highlighted):
-    mode = "edit"
     ctx = XSCRIPTCONTEXT.getComponentContext()
     smgr = ctx.ServiceManager
     toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
     parent = toolkit.getDesktopWindow()
-    insert_debug_line("edit mode")
 
-    if mode == "edit":
-        insert_debug_line("edit mode")
+    box = toolkit.createMessageBox(
+        parent,
+        # uno.createUnoStruct("com.sun.star.awt.Rectangle"),
+        "QUERYBOX",
+        3,  # BUTTONS_YES_NO
+        "Choose AI Mode",
+        "Click YES Summarise mode [default] or NO Edit mode",
+    )
+
+    mode = box.execute()
+
+    if mode == 2:
+        text_box("AI Mode", "Edit mode selected. Click OK to continue.")
 
         results, failed = asyncio.run(alltext_proc(highlighted))
+        failedstr = ", ".join(failed)
+
+        ai = stop_ai()
+        text_box("AI Status", f"AI stopped: {ai}")
 
         if failed != []:
             # error printing an array
-            box = toolkit.createMessageBox(
-                parent,
-                MESSAGEBOX,
-                MSG_BUTTONS.BUTTONS_OK,
-                "Notice",
-                "failed to procsess",
-            )
-            box.execute()
+            text_box("Error", f"{failedstr} failed to process")
         else:
-            box = toolkit.createMessageBox(
-                parent,
-                MESSAGEBOX,
-                MSG_BUTTONS.BUTTONS_OK,
-                "Notice",
-                "All tasks completed successfully",
-            )
-            box.execute()
-    elif mode == "summary":
+            text_box("Processing completed", "All tasks completed successfully")
+    elif mode == 3:
+        text_box("AI Mode", "Summarise mode selected. Click OK to continue.")
         summaries, failed = asyncio.run(alltext_proc(highlighted))
         if failed != []:
-            failedstr = ", ".join(failed)
-            box = toolkit.createMessageBox(
-                parent,
-                MESSAGEBOX,
-                MSG_BUTTONS.BUTTONS_OK,
-                "Notice",
-                str(failedstr) + "failed to procsess",
-            )
-            box.execute()
+            text_box("Error", f"{failedstr} failed to process")
         else:
-            box = toolkit.createMessageBox(
-                parent,
-                MESSAGEBOX,
-                MSG_BUTTONS.BUTTONS_OK,
-                "Notice",
-                "Summaries completed successfully",
-            )
-            box.execute()
+            text_box("Processing completed", "Summaries completed successfully")
 
     else:
-        box = toolkit.createMessageBox(
-            parent,
-            MESSAGEBOX,
-            MSG_BUTTONS.BUTTONS_OK,
-            "Notice",
-            f"{highlighted} + no mode",
-        )
-        box.execute()
+        text_box("Error", f"{highlighted} + no mode")
 
 
 # entry point of code
 # sends selected text to processing
 def send_selected_text_to_ai():
-    MAX_CHARS = 40
+    MAX_CHARS = 4000
+
+    ai = run_ai()
+
+    # insert_debug_line(f"AI started: {ai}")
+
+    text_box("AI Status", f"AI started: {ai}")
 
     # Get the current document and view cursor
     xDoc = XSCRIPTCONTEXT.getDocument()
@@ -519,40 +501,24 @@ def send_selected_text_to_ai():
 
     selected_text = []
     if hasattr(view_cursor, "getCount") and view_cursor.getCount() > 1:
-        insert_debug_line("get count")
+        # insert_debug_line("get count")
         for i in range(1, view_cursor.getCount()):
             # starts at 1. quirk of libreoffice
             text = view_cursor.getByIndex(i).getString()
             selected_text.append(text)
     elif hasattr(view_cursor, "getCount") and view_cursor.getCount() == 1:
-        insert_debug_line("get string")
+        # insert_debug_line("get string")
         text = view_cursor.getByIndex(0).getString()
         selected_text.append(text)
     else:
         selected_text = ""
 
     # checks if the selection is valid
-    if selected_text == [] or selected_text == "":
-        box = toolkit.createMessageBox(
-            parent,
-            MESSAGEBOX,
-            MSG_BUTTONS.BUTTONS_OK,
-            "Notice",
-            "No valid text selected.",
-        )
-        box.execute()
+    if not selected_text:
+        text_box("Error", "No valid text selected.")
         return
-    else:
-        box = toolkit.createMessageBox(
-            parent,
-            MESSAGEBOX,
-            MSG_BUTTONS.BUTTONS_OK,
-            "sending selected text to AI",
-            "arst",
-        )
-        box.execute()
 
-    insert_debug_line("sending selected text to ai")
+    # insert_debug_line("sending selected text to ai")
 
     selected_cut = []
     for i in range(len(selected_text)):
