@@ -66,6 +66,12 @@ enum class SvViewOpt {
     DestViewOnly   //ViewOptions are set only at View, not at the appl.
 };
 
+class SwModule : public SfxModule
+{
+    SfxShellExecResult ExecSendSelectedToAI(SfxRequest& rReq);
+};
+
+
 namespace com::sun::star::scanner { class XScannerManager2; }
 namespace com::sun::star::linguistic2 { class XLanguageGuessing; }
 namespace com::sun::star::linguistic2 { class XLinguServiceEventListener; }
@@ -74,6 +80,8 @@ class SwLinguServiceEventListener;
 
 class SAL_DLLPUBLIC_RTTI SwModule final : public SfxModule, public SfxListener, public utl::ConfigurationListener
 {
+public:
+    static void RegisterInterface(SfxModule* pMod);
     OUString            m_sActAuthor;
 
     // ConfigItems
@@ -136,6 +144,9 @@ private:
     static void InitInterface_Impl();
 
 public:
+    void ExecSendSelectedToAI();
+
+    
     // This Ctor only for SW-Dll.
     SwModule( SfxObjectFactory* pFact,
                 SfxObjectFactory* pWebFact,

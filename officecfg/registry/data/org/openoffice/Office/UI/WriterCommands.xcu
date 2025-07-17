@@ -3,6 +3,11 @@
 <oor:component-data xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:install="http://openoffice.org/2004/installation" oor:name="WriterCommands" oor:package="org.openoffice.Office.UI">
   <node oor:name="UserInterface">
     <node oor:name="Commands">
+      <node oor:name=".uno:SendSelectedToAI" oor:op="replace">
+        <prop oor:name="Label" oor:type="xs:string">
+          <value>Send Selected to AI</value>
+        </prop>
+      </node>
       <node oor:name=".uno:AddTextBox" oor:op="replace">
         <prop oor:name="Label" oor:type="xs:string">
           <value xml:lang="en-US">Add Text Box</value>
@@ -4430,21 +4435,6 @@
         </prop>
         <prop oor:name="Properties" oor:type="xs:int">
           <value>8</value>
-        </prop>
-      </node>
-      <node oor:name=".uno:SummarizeAI" oor:op="replace">
-        <prop oor:name="Label" oor:type="xs:string">
-          <value xml:lang="en-US">AI Summarize Selection</value>
-        </prop>
-      </node>
-      <node oor:name=".uno:EditAI" oor:op="replace">
-        <prop oor:name="Label" oor:type="xs:string">
-          <value xml:lang="en-US">AI Edit Selection</value>
-        </prop>
-      </node>
-      <node oor:name=".uno:ExtendAI" oor:op="replace">
-        <prop oor:name="Label" oor:type="xs:string">
-          <value xml:lang="en-US">AI Extend Selection</value>
         </prop>
       </node>
     </node>

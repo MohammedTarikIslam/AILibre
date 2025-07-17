@@ -27,6 +27,10 @@ $(eval $(call gb_Library_set_componentfile,sw,sw/util/sw,services))
 
 $(eval $(call gb_Library_set_precompiled_header,sw,sw/inc/pch/precompiled_sw))
 
+$(eval $(call gb_Library_add_libs,sw,\
+    -lcurl \
+))
+
 $(eval $(call gb_Library_set_include,sw,\
     -I$(SRCDIR)/sw/source/core/inc \
     -I$(SRCDIR)/sw/source/filter/inc \

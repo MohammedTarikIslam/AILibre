@@ -24,7 +24,7 @@ import psutil
 import requests
 
 # Global variables
-MODEL_PATH = "/home/tarik8422/llama.cpp/models/deepseek-coder-33b-instruct.Q4_K_M.gguf"
+MODEL_PATH = "/home/tarik8422/llama.cpp/models/mistral.Q4_K_M.gguf"
 MAX_TOKENS = 128
 # match server --ctx-size
 MAX_CTX = 8192
@@ -58,7 +58,6 @@ def run_ai():
         ai_process = subprocess.Popen(["bash", "-c", command])
         if ai_process is None:
             return "Failed to start AI process: got None"
-        text_box("AI Status", f"AI started with PID {ai_process.pid}")
         return f"AI started with PID {ai_process.pid}"
     except Exception as e:
         return f"Failed to start AI process: {str(e)}"
@@ -166,7 +165,7 @@ def split_text(text, max_chars):
 def make_summary_prompt(text):
     return f"""### Instruction:
  Read the text carefully. Provide a concise but detailed summary that includes:
-- Any important assertion, directive, commitment, emotion and declaration where they are applicable in bullet point format
+- Any important assertion, directive, commitment, emotion and declaration if applicable in bullet point format
 - If the text is only instructions, provide simpler short instructions in bullet point format with all details included
 ### Text:
 {text}
@@ -386,10 +385,7 @@ async def alltext_proc(highlighted):
         sorted_results = [results_dict[i] for i in sorted(results_dict)]
 
         result = results_dict.copy()
-        box = toolkit.createMessageBox(
-            parent, MESSAGEBOX, MSG_BUTTONS.BUTTONS_OK, "processing text", "1111"
-        )
-        box.execute()
+
         # output results
         for index, i, text in sorted_results:
             insert_debug_line(f"Result {index} {i}: {text}")
@@ -422,6 +418,8 @@ def send_to_ai(highlighted):
         )
         return
 
+    insert_debug_line("AI server is running, proceeding with processing")
+
     box = toolkit.createMessageBox(
         parent,
         # uno.createUnoStruct("com.sun.star.awt.Rectangle"),
@@ -432,11 +430,14 @@ def send_to_ai(highlighted):
     )
     mode = box.execute()
 
+    insert_debug_line(f"Mode selected: {mode}")
+
     results, failed = asyncio.run(alltext_proc(highlighted))
     failedstr = ", ".join(failed)
 
+    insert_debug_line(f"done processing")
+
     ai = stop_ai()
-    text_box("AI Status", f"AI stopped: {ai}")
 
     if mode == 2:
         text_box("AI Mode", "Edit mode selected. Click OK to continue.")
@@ -456,11 +457,13 @@ def send_to_ai(highlighted):
     else:
         text_box("Error", f"{highlighted} + no mode")
 
+    text_box("AI Status", f"AI stopped: {ai}")
+
 
 # entry point of code
 # sends selected text to processing
 def send_selected_text_to_ai():
-    MAX_CHARS = 1500
+    MAX_CHARS = 2000
 
     ai = run_ai()
     text_box("AI Status", f"AI started: {ai}")

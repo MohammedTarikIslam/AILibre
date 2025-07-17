@@ -441,3 +441,5 @@ gb_Python_INSTALLED_EXECUTABLE_GDB := $(INSTROOT)/program/python.bin
 include $(GBUILDDIR)/platform/com_GCC_class.mk
 
 # vim: set noet sw=4:
+
+gb_Library_LIBS += -lcurl
