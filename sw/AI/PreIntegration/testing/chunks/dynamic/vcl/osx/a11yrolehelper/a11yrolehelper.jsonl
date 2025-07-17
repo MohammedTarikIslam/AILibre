@@ -1,0 +1,1 @@
+{"file": "vcl/osx/a11yrolehelper.h", "chunk_id": 0, "code": "// FILE: vcl/osx/a11yrolehelper.h\n// CHUNK 0 | estimated_tokens: 38\n\n#include <com/sun/star/accessibility/XAccessibleContext.hpp>\ninterface AquaA11yRoleHelper : NSObject\n{\n}", "tokens": 74}

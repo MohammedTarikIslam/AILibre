@@ -1,0 +1,1 @@
+{"file": "qadevOOo/runner/base/TestBase.java", "chunk_id": 0, "code": "// FILE: qadevOOo/runner/base/TestBase.java\n// CHUNK 0 | estimated_tokens: 39\n\n/**\n*\n* Base Interface to execute a given TestJob\n*/\npublic interface TestBase {\n\n    boolean executeTest(TestParameters param) throws Exception;\n\n}", "tokens": 75}

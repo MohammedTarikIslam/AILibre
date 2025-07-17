@@ -1,0 +1,1 @@
+{"file": "vcl/osx/a11ytablewrapper.h", "chunk_id": 0, "code": "// FILE: vcl/osx/a11ytablewrapper.h\n// CHUNK 0 | estimated_tokens: 44\n\n#define MAXIMUM_ACCESSIBLE_TABLE_CELLS 1000\ninterface AquaA11yTableWrapper : AquaA11yWrapper\n{\n}", "tokens": 80}

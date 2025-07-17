@@ -1,0 +1,1 @@
+{"file": "svtools/source/misc/svtresid.cxx", "chunk_id": 0, "code": "// FILE: svtools/source/misc/svtresid.cxx\n// CHUNK 0 | estimated_tokens: 86\n\n#include <svtools/svtresid.hxx>\nstd::locale SvtResLocale() { return Translate::Create(\"svt\"); }\n#include <svtools/svtresid.hxx>\nOUString SvtResId(TranslateId aId) { return Translate::get(aId, SvtResLocale()); }", "tokens": 124}

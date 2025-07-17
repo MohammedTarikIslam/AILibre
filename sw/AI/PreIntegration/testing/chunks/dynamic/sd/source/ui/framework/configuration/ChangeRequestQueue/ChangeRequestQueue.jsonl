@@ -1,0 +1,1 @@
+{"file": "sd/source/ui/framework/configuration/ChangeRequestQueue.cxx", "chunk_id": 0, "code": "// FILE: sd/source/ui/framework/configuration/ChangeRequestQueue.cxx\n// CHUNK 0 | estimated_tokens: 22\n\n#include \"ChangeRequestQueue.hxx\"\nChangeRequestQueue::ChangeRequestQueue() {}", "tokens": 61}

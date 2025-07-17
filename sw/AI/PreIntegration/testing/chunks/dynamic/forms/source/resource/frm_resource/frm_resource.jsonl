@@ -1,0 +1,1 @@
+{"file": "forms/source/resource/frm_resource.cxx", "chunk_id": 0, "code": "// FILE: forms/source/resource/frm_resource.cxx\n// CHUNK 0 | estimated_tokens: 51\n\n#include <frm_resource.hxx>\nOUString loadString(TranslateId aResId)\n        {\n            return Translate::get(aResId, Translate::Create(\"frm\"));\n        }", "tokens": 86}

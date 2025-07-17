@@ -1,0 +1,1 @@
+{"file": "sal/emscripten/lo-bootstrap.c", "chunk_id": 0, "code": "// FILE: sal/emscripten/lo-bootstrap.c\n// CHUNK 0 | estimated_tokens: 59\n\n#include <osl/detail/emscripten-bootstrap.h>\n__attribute__ ((visibility(\"default\")))\nconst char *\nlo_get_app_data_dir(void)\n{\n    return \"/instdir\";\n}", "tokens": 92}

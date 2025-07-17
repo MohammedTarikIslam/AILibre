@@ -1,0 +1,1 @@
+{"file": "o3tl/qa/test-unit_conversion.cxx", "chunk_id": 0, "code": "// FILE: o3tl/qa/test-unit_conversion.cxx\n// CHUNK 0 | estimated_tokens: 76\n\n// Just some static asserts\nconstexpr double const_abs(double f) { return f >= 0 ? f : -f; }\n// Just some static asserts\nconstexpr bool eq(double a, double b) { return const_abs(a - b) < 1E-6; }", "tokens": 115}

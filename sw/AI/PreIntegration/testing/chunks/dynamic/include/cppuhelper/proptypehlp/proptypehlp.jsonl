@@ -1,0 +1,1 @@
+{"file": "include/cppuhelper/proptypehlp.h", "chunk_id": 0, "code": "// FILE: include/cppuhelper/proptypehlp.h\n// CHUNK 0 | estimated_tokens: 13\n\n#include \"sal/types.h\"\nclass Any", "tokens": 48}

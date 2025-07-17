@@ -1,0 +1,1 @@
+{"file": "odk/examples/OLE/activex/SOActiveX.h", "chunk_id": 0, "code": "// FILE: odk/examples/OLE/activex/SOActiveX.h\n// CHUNK 0 | estimated_tokens: 38\n\n// CSOActiveX\nclass ATL_NO_VTABLE\nHRESULT OnDraw(ATL_DRAWINFO& di) { return S_OK; }", "tokens": 77}

@@ -1,0 +1,1 @@
+{"file": "qadevOOo/tests/java/ifc/style/_ParagraphStyle.java", "chunk_id": 0, "code": "// FILE: qadevOOo/tests/java/ifc/style/_ParagraphStyle.java\n// CHUNK 0 | estimated_tokens: 20\n\n/**\n*/\npublic class _ParagraphStyle extends MultiPropertyTest {\n\n}", "tokens": 62}

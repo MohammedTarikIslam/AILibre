@@ -1,0 +1,1 @@
+{"file": "vcl/qt5/QtXAccessible.cxx", "chunk_id": 0, "code": "// FILE: vcl/qt5/QtXAccessible.cxx\n// CHUNK 0 | estimated_tokens: 61\n\n#include <sal/log.hxx>\n#include <utility>\nQtXAccessible::QtXAccessible(Reference<XAccessible> xAccessible)\n    : m_xAccessible(std::move(xAccessible))\n{\n}", "tokens": 96}

@@ -1,0 +1,1 @@
+{"file": "oox/source/drawingml/table/tablestyle.cxx", "chunk_id": 0, "code": "// FILE: oox/source/drawingml/table/tablestyle.cxx\n// CHUNK 0 | estimated_tokens: 26\n\n#include <drawingml/table/tablestyle.hxx>\nTableStyle::TableStyle() {}", "tokens": 65}

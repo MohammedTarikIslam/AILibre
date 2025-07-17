@@ -1,0 +1,1 @@
+{"file": "include/osl/pipe.h", "chunk_id": 0, "code": "// FILE: include/osl/pipe.h\n// CHUNK 0 | estimated_tokens: 66\n\n#define osl_Pipe_OPEN        0x0000     /*< open existing pipe */\n#define osl_Pipe_CREATE      0x0001     /*< create pipe and open it, fails if already exists */\nstruct oslPipeImpl", "tokens": 96}

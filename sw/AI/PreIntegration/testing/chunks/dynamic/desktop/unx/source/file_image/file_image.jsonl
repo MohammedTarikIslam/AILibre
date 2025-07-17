@@ -1,0 +1,1 @@
+{"file": "desktop/unx/source/file_image.h", "chunk_id": 0, "code": "// FILE: desktop/unx/source/file_image.h\n// CHUNK 0 | estimated_tokens: 50\n\n/** file_image.\n*/\nstruct file_image_st\n{\n    void * m_base;\n    size_t m_size;\n}\n/** file_image.\n*/\nstruct file_image_st", "tokens": 85}

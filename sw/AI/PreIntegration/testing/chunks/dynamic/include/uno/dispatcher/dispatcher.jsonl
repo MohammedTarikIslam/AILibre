@@ -1,0 +1,1 @@
+{"file": "include/uno/dispatcher.h", "chunk_id": 0, "code": "// FILE: include/uno/dispatcher.h\n// CHUNK 0 | estimated_tokens: 66\n\n#endif\nstruct _typelib_TypeDescription\n#endif\nstruct _uno_Interface\n*/\nstruct _uno_Interface\n*/\nstruct _typelib_TypeDescription\n/** The binary C uno interface description.\n*/\nstruct SAL_DLLPUBLIC_RTTI", "tokens": 101}

@@ -1,0 +1,1 @@
+{"file": "sal/test/test_salmain.cxx", "chunk_id": 0, "code": "// FILE: sal/test/test_salmain.cxx\n// CHUNK 0 | estimated_tokens: 44\n\n#include <stdio.h>\nSAL_IMPLEMENT_MAIN()\n{\n    fprintf(stderr, \"success!\\n\");\n\n    return 0;\n}", "tokens": 77}

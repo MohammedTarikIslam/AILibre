@@ -1,0 +1,1 @@
+{"file": "sal/test/test_salmainwithargs.cxx", "chunk_id": 0, "code": "// FILE: sal/test/test_salmainwithargs.cxx\n// CHUNK 0 | estimated_tokens: 75\n\n#include <stdio.h>\nSAL_IMPLEMENT_MAIN_WITH_ARGS(argc, argv)\n{\n    fprintf(stderr, \"argc: %i argv: %p - success!\\n\", argc, argv);\n\n    return 0;\n}", "tokens": 110}

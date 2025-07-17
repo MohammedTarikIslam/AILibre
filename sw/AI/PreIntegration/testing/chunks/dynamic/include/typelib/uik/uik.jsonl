@@ -1,0 +1,1 @@
+{"file": "include/typelib/uik.h", "chunk_id": 0, "code": "// FILE: include/typelib/uik.h\n// CHUNK 0 | estimated_tokens: 80\n\n*/\nstruct _typelib_Uik\n{\n    sal_uInt32 m_Data1;\n    sal_uInt16 m_Data2;\n    sal_uInt16 m_Data3;\n    sal_uInt32 m_Data4;\n    sal_uInt32 m_Data5;\n}", "tokens": 112}

@@ -1,0 +1,1 @@
+{"file": "sot/qa/complex/olesimplestorage/OLESimpleStorageTest.java", "chunk_id": 0, "code": "// FILE: sot/qa/complex/olesimplestorage/OLESimpleStorageTest.java\n// CHUNK 0 | estimated_tokens: 15\n\ninterface OLESimpleStorageTest {\n    boolean test();\n}", "tokens": 56}

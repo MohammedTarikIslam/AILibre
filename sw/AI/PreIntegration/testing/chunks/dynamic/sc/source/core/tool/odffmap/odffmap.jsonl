@@ -1,0 +1,1 @@
+{"file": "sc/source/core/tool/odffmap.cxx", "chunk_id": 0, "code": "// FILE: sc/source/core/tool/odffmap.cxx\n// CHUNK 0 | estimated_tokens: 30\n\nsize_t ScCompiler::GetAddInMapCount()\n{\n    return std::size(g_aAddInMap);\n}", "tokens": 66}

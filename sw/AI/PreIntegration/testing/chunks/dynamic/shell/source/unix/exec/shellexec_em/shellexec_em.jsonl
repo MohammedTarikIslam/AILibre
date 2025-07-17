@@ -1,0 +1,1 @@
+{"file": "shell/source/unix/exec/shellexec_em.cxx", "chunk_id": 0, "code": "// FILE: shell/source/unix/exec/shellexec_em.cxx\n// CHUNK 0 | estimated_tokens: 46\n\n#include <emscripten.h>\nvoid execute_browser(const char* sUrl) { EM_ASM(\"window.open(UTF8ToString($0));\", sUrl); }", "tokens": 86}

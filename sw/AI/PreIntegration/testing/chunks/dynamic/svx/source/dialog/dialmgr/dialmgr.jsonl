@@ -1,0 +1,1 @@
+{"file": "svx/source/dialog/dialmgr.cxx", "chunk_id": 0, "code": "// FILE: svx/source/dialog/dialmgr.cxx\n// CHUNK 0 | estimated_tokens: 89\n\n#include <svx/dialmgr.hxx>\nstd::locale SvxResLocale() { return Translate::Create(\"svx\"); }\n#include <svx/dialmgr.hxx>\nOUString SvxResId(TranslateId aId) { return Translate::get(aId, SvxResLocale()); }", "tokens": 126}

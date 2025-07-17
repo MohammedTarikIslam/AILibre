@@ -1,0 +1,1 @@
+{"file": "apple_remote/source/GlobalKeyboardDevice.h", "chunk_id": 0, "code": "// FILE: apple_remote/source/GlobalKeyboardDevice.h\n// CHUNK 0 | estimated_tokens: 41\n\n*/\nrface GlobalKeyboardDevice : RemoteControl\n{\n    NSMutableDictionary* hotKeyRemoteEventMapping;\n    EventHandlerRef eventHandlerRef;\n}\n\n-", "tokens": 75}

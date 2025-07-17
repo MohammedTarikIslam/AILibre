@@ -1,0 +1,1 @@
+{"file": "vcl/source/app/ITiledRenderable.cxx", "chunk_id": 0, "code": "// FILE: vcl/source/app/ITiledRenderable.cxx\n// CHUNK 0 | estimated_tokens: 32\n\n#ifdef _MSC_VER\n#pragma warning(pop)\n#endif\nITiledRenderable::~ITiledRenderable() {}", "tokens": 68}

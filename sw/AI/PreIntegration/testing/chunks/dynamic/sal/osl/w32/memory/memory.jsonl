@@ -1,0 +1,1 @@
+{"file": "sal/osl/w32/memory.cxx", "chunk_id": 0, "code": "// FILE: sal/osl/w32/memory.cxx\n// CHUNK 0 | estimated_tokens: 84\n\n#include <malloc.h>\nvoid* osl_aligned_alloc( sal_Size align, sal_Size size )\n{\n    return _aligned_malloc(size, align);\n}\n#include <malloc.h>\nvoid osl_aligned_free( void* p )\n{\n    _aligned_free(p);\n}", "tokens": 120}

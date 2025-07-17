@@ -1,0 +1,1 @@
+{"file": "compilerplugins/clang/test/stringview-c++03.cxx", "chunk_id": 0, "code": "// FILE: compilerplugins/clang/test/stringview-c++03.cxx\n// CHUNK 0 | estimated_tokens: 55\n\n// expected-no-diagnostics\nrtl::OUStringBuffer nowarn(rtl::OUStringBuffer const& s, sal_Int32 n)\n{\n    return s.copy(n, s.getLength() - n);\n}", "tokens": 95}

@@ -1,0 +1,1 @@
+{"file": "tools/source/misc/UniqueID.cxx", "chunk_id": 0, "code": "// FILE: tools/source/misc/UniqueID.cxx\n// CHUNK 0 | estimated_tokens: 68\n\n#include <tools/UniqueID.hxx>\n#include <atomic>\nUniqueID::UniqueID()\n{\n    static std::atomic<sal_uInt64> staticCounter(1);\n    mnID = staticCounter.fetch_add(1);\n}", "tokens": 103}

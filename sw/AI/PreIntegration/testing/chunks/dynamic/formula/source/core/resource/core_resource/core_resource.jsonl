@@ -1,0 +1,1 @@
+{"file": "formula/source/core/resource/core_resource.cxx", "chunk_id": 0, "code": "// FILE: formula/source/core/resource/core_resource.cxx\n// CHUNK 0 | estimated_tokens: 44\n\n#include <core_resource.hxx>\nOUString ForResId(TranslateId aId) { return Translate::get(aId, Translate::Create(\"for\")); }", "tokens": 80}

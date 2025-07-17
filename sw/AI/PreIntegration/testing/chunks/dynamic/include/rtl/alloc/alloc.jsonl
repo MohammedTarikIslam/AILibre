@@ -1,0 +1,1 @@
+{"file": "include/rtl/alloc.h", "chunk_id": 0, "code": "// FILE: include/rtl/alloc.h\n// CHUNK 0 | estimated_tokens: 72\n\n/** Opaque rtl_arena_type.\n*/\nstruct SAL_DLLPUBLIC_RTTI\n/** Opaque rtl_arena_type.\n*/\nstruct rtl_arena_st\n/** Opaque rtl_cache_type.\n*/\nstruct rtl_cache_st", "tokens": 103}

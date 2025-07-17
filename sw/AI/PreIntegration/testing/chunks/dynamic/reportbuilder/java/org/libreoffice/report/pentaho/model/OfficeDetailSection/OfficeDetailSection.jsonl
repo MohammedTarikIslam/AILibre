@@ -1,0 +1,1 @@
+{"file": "reportbuilder/java/org/libreoffice/report/pentaho/model/OfficeDetailSection.java", "chunk_id": 0, "code": "// FILE: reportbuilder/java/org/libreoffice/report/pentaho/model/OfficeDetailSection.java\n// CHUNK 0 | estimated_tokens: 44\n\n/**\n* A Marker-Class.\n*\n* @since 02.03.2007\n*/\npublic class OfficeDetailSection extends DetailSection\n{\n\n}", "tokens": 90}

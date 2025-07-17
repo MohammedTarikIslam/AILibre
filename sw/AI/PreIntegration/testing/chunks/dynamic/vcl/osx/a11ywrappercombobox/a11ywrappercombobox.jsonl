@@ -1,0 +1,1 @@
+{"file": "vcl/osx/a11ywrappercombobox.h", "chunk_id": 0, "code": "// FILE: vcl/osx/a11ywrappercombobox.h\n// CHUNK 0 | estimated_tokens: 74\n\n#include <osx/a11ywrapper.h>\n#include <com/sun/star/accessibility/XAccessibleContext.hpp>\ninterface AquaA11yWrapperComboBox : AquaA11yWrapper\n{\n    AquaA11yWrapper* textArea;\n}", "tokens": 112}

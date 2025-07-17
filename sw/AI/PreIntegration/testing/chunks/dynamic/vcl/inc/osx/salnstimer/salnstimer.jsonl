@@ -1,0 +1,1 @@
+{"file": "vcl/inc/osx/salnstimer.h", "chunk_id": 0, "code": "// FILE: vcl/inc/osx/salnstimer.h\n// CHUNK 0 | estimated_tokens: 49\n\n#include <premac.h>\n#include <Cocoa/Cocoa.h>\n#include <postmac.h>\ninterface TimerCallbackCaller : NSObject\n{\n}", "tokens": 85}

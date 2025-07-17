@@ -1,0 +1,1 @@
+{"file": "desktop/win32/source/officeloader/unopkg_com.cxx", "chunk_id": 0, "code": "// FILE: desktop/win32/source/officeloader/unopkg_com.cxx\n// CHUNK 0 | estimated_tokens: 68\n\n#include \"../loader.hxx\"\nint main(int /*argc*/, char** /*argv*/)\n{\n    // let unopkg.bin use unopkg.com's console\n    return desktop_win32::unopkgloader_impl(true);\n}", "tokens": 111}

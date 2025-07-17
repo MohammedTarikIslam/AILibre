@@ -1,0 +1,1 @@
+{"file": "winaccessibility/source/UAccCOM/EnumVariant.h", "chunk_id": 0, "code": "// FILE: winaccessibility/source/UAccCOM/EnumVariant.h\n// CHUNK 0 | estimated_tokens: 36\n\n/**\n* CEnumVariant implements IEnumVARIANT interface.\n*/\nclass ATL_NO_VTABLE\nvirtual ~CEnumVariant() {}", "tokens": 74}

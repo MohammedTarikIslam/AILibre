@@ -1,0 +1,1 @@
+{"file": "bean/com/sun/star/comp/beans/InvalidArgumentException.java", "chunk_id": 0, "code": "// FILE: bean/com/sun/star/comp/beans/InvalidArgumentException.java\n// CHUNK 0 | estimated_tokens: 27\n\n/** indicates an invalid argument in a function call.\n*/\n@Deprecated\npublic class InvalidArgumentException extends Exception\n{\n}", "tokens": 65}

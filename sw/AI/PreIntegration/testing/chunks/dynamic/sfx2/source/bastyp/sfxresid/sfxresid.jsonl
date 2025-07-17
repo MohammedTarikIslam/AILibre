@@ -1,0 +1,1 @@
+{"file": "sfx2/source/bastyp/sfxresid.cxx", "chunk_id": 0, "code": "// FILE: sfx2/source/bastyp/sfxresid.cxx\n// CHUNK 0 | estimated_tokens: 51\n\n#include <sfx2/sfxresid.hxx>\nOUString SfxResId(TranslateId aId) { return Translate::get(aId, Translate::Create(\"sfx\")); }", "tokens": 89}

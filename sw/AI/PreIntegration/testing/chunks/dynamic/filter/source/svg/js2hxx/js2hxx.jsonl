@@ -1,0 +1,1 @@
+{"file": "filter/source/svg/js2hxx.py", "chunk_id": 0, "code": "// FILE: filter/source/svg/js2hxx.py\n// CHUNK 0 | estimated_tokens: 58\n\n# All Rights Reserved.\n#\n# For minor contributions see the git repository.\ndef get_var_decl(n):\n    return 'static const char %s%d[] =' % ( VARIABLE_NAME, n )", "tokens": 92}

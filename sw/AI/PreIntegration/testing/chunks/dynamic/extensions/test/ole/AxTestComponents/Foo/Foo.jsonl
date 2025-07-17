@@ -1,0 +1,1 @@
+{"file": "extensions/test/ole/AxTestComponents/Foo.cpp", "chunk_id": 0, "code": "// FILE: extensions/test/ole/AxTestComponents/Foo.cpp\n// CHUNK 0 | estimated_tokens: 54\n\n// CBasic\nCFoo::CFoo() {}\n// CBasic\nCFoo::~CFoo() {}\n// CBasic\nSTDMETHODIMP CFoo::Foo(IUnknown* pVal) { return S_OK; }", "tokens": 94}

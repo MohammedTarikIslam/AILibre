@@ -1,0 +1,1 @@
+{"file": "sw/source/core/edit/myproject/ai.py", "chunk_id": 0, "code": "// FILE: sw/source/core/edit/myproject/ai.py\n// CHUNK 0 | estimated_tokens: 34\n\nclass MainJob : public cppu::WeakImplHelper<XJobExecutor> {\nprivate:\n    Reference<XComponentContext> ctx;", "tokens": 70}

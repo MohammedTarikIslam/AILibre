@@ -1,0 +1,1 @@
+{"file": "cui/source/factory/cuiresmgr.cxx", "chunk_id": 0, "code": "// FILE: cui/source/factory/cuiresmgr.cxx\n// CHUNK 0 | estimated_tokens: 63\n\n#include <dialmgr.hxx>\n#include <unotools/resmgr.hxx>\nOUString CuiResId(TranslateId aKey) { return Translate::get(aKey, Translate::Create(\"cui\")); }", "tokens": 99}

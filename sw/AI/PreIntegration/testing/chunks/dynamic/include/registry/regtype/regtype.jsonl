@@ -1,0 +1,1 @@
+{"file": "include/registry/regtype.h", "chunk_id": 0, "code": "// FILE: include/registry/regtype.h\n// CHUNK 0 | estimated_tokens: 33\n\n*/\nstruct typed_flags<RegAccessMode> : is_typed_flags<RegAccessMode, 0x03>\n{\n}", "tokens": 64}

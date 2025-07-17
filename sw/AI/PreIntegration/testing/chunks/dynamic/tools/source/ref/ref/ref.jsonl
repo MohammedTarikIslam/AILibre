@@ -1,0 +1,1 @@
+{"file": "tools/source/ref/ref.cxx", "chunk_id": 0, "code": "// FILE: tools/source/ref/ref.cxx\n// CHUNK 0 | estimated_tokens: 66\n\n#include <tools/ref.hxx>\n#include <tools/weakbase.hxx>\ntools::WeakBase::~WeakBase()\n{\n    if (mpWeakConnection.is())\n        mpWeakConnection->mpReference = nullptr;\n}", "tokens": 98}

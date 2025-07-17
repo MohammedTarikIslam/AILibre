@@ -1,0 +1,1 @@
+{"file": "sc/source/ui/undo/target.cxx", "chunk_id": 0, "code": "// FILE: sc/source/ui/undo/target.cxx\n// CHUNK 0 | estimated_tokens: 23\n\n#include <target.hxx>\nScTabViewTarget::~ScTabViewTarget() {}", "tokens": 57}

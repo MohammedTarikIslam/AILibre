@@ -1,0 +1,1 @@
+{"file": "sw/source/core/unocore/TextCursorHelper.cxx", "chunk_id": 0, "code": "// FILE: sw/source/core/unocore/TextCursorHelper.cxx\n// CHUNK 0 | estimated_tokens: 39\n\n#include <TextCursorHelper.hxx>\n#include <comphelper/servicehelper.hxx>\nOTextCursorHelper::~OTextCursorHelper() {}", "tokens": 77}

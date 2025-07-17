@@ -1,0 +1,1 @@
+{"file": "vcl/inc/unx/salunx.h", "chunk_id": 0, "code": "// FILE: vcl/inc/unx/salunx.h\n// CHUNK 0 | estimated_tokens: 63\n\n#include <tools/long.hxx>\ninline tools::Long Divide(tools::Long nDividend, tools::Long nDivisor)\n{\n    return (nDividend + nDivisor / 2) / nDivisor;\n}", "tokens": 98}

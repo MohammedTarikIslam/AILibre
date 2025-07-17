@@ -1,0 +1,1 @@
+{"file": "libreofficekit/qa/unit/compile_test.c", "chunk_id": 0, "code": "// FILE: libreofficekit/qa/unit/compile_test.c\n// CHUNK 0 | estimated_tokens: 39\n\n// just make sure this stuff compiles from a plain C file\nLibreOfficeKit* compile_test(void) { return lok_init(\"install/path\"); }", "tokens": 76}

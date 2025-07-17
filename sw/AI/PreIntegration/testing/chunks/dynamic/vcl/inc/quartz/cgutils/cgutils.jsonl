@@ -1,0 +1,1 @@
+{"file": "vcl/inc/quartz/cgutils.h", "chunk_id": 0, "code": "// FILE: vcl/inc/quartz/cgutils.h\n// CHUNK 0 | estimated_tokens: 37\n\n#include <premac.h>\n#include <CoreGraphics/CoreGraphics.h>\n#include <postmac.h>\nclass SalBitmap", "tokens": 73}

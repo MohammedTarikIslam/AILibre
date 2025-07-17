@@ -1,0 +1,1 @@
+{"file": "dbaccess/source/ui/querydesign/TableFieldInfo.cxx", "chunk_id": 0, "code": "// FILE: dbaccess/source/ui/querydesign/TableFieldInfo.cxx\n// CHUNK 0 | estimated_tokens: 58\n\n#include \"TableFieldInfo.hxx\"\nOTableFieldInfo::OTableFieldInfo()\n    : m_eFieldType(TAB_NORMAL_FIELD)\n    , m_eDataType(1000)\n{\n}", "tokens": 96}

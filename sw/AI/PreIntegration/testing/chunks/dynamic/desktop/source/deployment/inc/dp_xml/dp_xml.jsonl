@@ -1,0 +1,1 @@
+{"file": "desktop/source/deployment/inc/dp_xml.h", "chunk_id": 0, "code": "// FILE: desktop/source/deployment/inc/dp_xml.h\n// CHUNK 0 | estimated_tokens: 44\n\n#include <com/sun/star/uno/XComponentContext.hpp>\n#include <com/sun/star/xml/sax/XDocumentHandler.hpp>\nclass Content", "tokens": 80}

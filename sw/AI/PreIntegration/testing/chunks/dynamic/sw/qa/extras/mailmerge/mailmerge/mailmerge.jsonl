@@ -1,0 +1,1 @@
+{"file": "sw/qa/extras/mailmerge/mailmerge.cxx", "chunk_id": 0, "code": "// FILE: sw/qa/extras/mailmerge/mailmerge.cxx\n// CHUNK 0 | estimated_tokens: 30\n\n#include \"mailmergetestbase.cxx\"\nclass MMTest : public MailMergeTestBase\n{\n}", "tokens": 68}

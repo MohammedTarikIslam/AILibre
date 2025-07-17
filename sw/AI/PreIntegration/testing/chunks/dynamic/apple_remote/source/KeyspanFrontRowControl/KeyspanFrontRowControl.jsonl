@@ -1,0 +1,1 @@
+{"file": "apple_remote/source/KeyspanFrontRowControl.h", "chunk_id": 0, "code": "// FILE: apple_remote/source/KeyspanFrontRowControl.h\n// CHUNK 0 | estimated_tokens: 25\n\n*/\nrface KeyspanFrontRowControl : HIDRemoteControlDevice\n{\n}\n\n@e", "tokens": 61}

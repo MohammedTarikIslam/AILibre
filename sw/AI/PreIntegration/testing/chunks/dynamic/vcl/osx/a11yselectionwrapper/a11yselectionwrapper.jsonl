@@ -1,0 +1,1 @@
+{"file": "vcl/osx/a11yselectionwrapper.h", "chunk_id": 0, "code": "// FILE: vcl/osx/a11yselectionwrapper.h\n// CHUNK 0 | estimated_tokens: 49\n\n#include <osx/osxvcltypes.h>\n#include <osx/a11ywrapper.h>\ninterface AquaA11ySelectionWrapper : NSObject\n{\n}", "tokens": 85}

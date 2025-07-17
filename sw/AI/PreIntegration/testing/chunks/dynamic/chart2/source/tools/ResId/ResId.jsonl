@@ -1,0 +1,1 @@
+{"file": "chart2/source/tools/ResId.cxx", "chunk_id": 0, "code": "// FILE: chart2/source/tools/ResId.cxx\n// CHUNK 0 | estimated_tokens: 47\n\n#include <ResId.hxx>\nOUString SchResId(TranslateId aId)\n    {\n        return Translate::get(aId, Translate::Create(\"chart\"));\n    }", "tokens": 81}

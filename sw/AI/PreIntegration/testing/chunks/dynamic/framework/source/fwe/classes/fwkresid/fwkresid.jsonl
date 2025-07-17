@@ -1,0 +1,1 @@
+{"file": "framework/source/fwe/classes/fwkresid.cxx", "chunk_id": 0, "code": "// FILE: framework/source/fwe/classes/fwkresid.cxx\n// CHUNK 0 | estimated_tokens: 50\n\n#include <classes/fwkresid.hxx>\nOUString FwkResId(TranslateId aId) { return Translate::get(aId, Translate::Create(\"fwk\")); }", "tokens": 88}

@@ -1,0 +1,1 @@
+{"file": "vcl/inc/unx/x11/x11gdiimpl.h", "chunk_id": 0, "code": "// FILE: vcl/inc/unx/x11/x11gdiimpl.h\n// CHUNK 0 | estimated_tokens: 59\n\n#include <sal/types.h>\nclass ControlCacheKey\n#include <sal/types.h>\nclass SAL_LOPLUGIN_ANNOTATE\n#include <sal/types.h>\nvirtual ~X11GraphicsImpl(){}", "tokens": 103}

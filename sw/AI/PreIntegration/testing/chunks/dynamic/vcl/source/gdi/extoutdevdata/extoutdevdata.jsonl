@@ -1,0 +1,1 @@
+{"file": "vcl/source/gdi/extoutdevdata.cxx", "chunk_id": 0, "code": "// FILE: vcl/source/gdi/extoutdevdata.cxx\n// CHUNK 0 | estimated_tokens: 29\n\n#include <vcl/extoutdevdata.hxx>\nExtOutDevData::~ExtOutDevData() {}", "tokens": 66}

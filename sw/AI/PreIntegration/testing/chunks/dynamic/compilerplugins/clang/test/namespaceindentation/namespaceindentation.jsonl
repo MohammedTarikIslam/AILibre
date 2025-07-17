@@ -1,0 +1,1 @@
+{"file": "compilerplugins/clang/test/namespaceindentation.cxx", "chunk_id": 0, "code": "// FILE: compilerplugins/clang/test/namespaceindentation.cxx\n// CHUNK 0 | estimated_tokens: 9\n\n// no warning expected\nclass XComponentContext", "tokens": 44}

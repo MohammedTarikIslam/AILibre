@@ -1,0 +1,1 @@
+{"file": "xmloff/source/style/StyleMap.cxx", "chunk_id": 0, "code": "// FILE: xmloff/source/style/StyleMap.cxx\n// CHUNK 0 | estimated_tokens: 39\n\n#include <StyleMap.hxx>\nStyleMap::StyleMap() {}\n#include <StyleMap.hxx>\nStyleMap::~StyleMap() {}", "tokens": 76}

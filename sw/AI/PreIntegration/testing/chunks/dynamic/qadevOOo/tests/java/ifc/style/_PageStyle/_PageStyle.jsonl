@@ -1,0 +1,1 @@
+{"file": "qadevOOo/tests/java/ifc/style/_PageStyle.java", "chunk_id": 0, "code": "// FILE: qadevOOo/tests/java/ifc/style/_PageStyle.java\n// CHUNK 0 | estimated_tokens: 48\n\n/**\n* Test page style properties.\n* These properties are a subset of the PageProperties. So just use the\n* PageProperties test\n*/\npublic class _PageStyle extends _PageProperties {\n\n}", "tokens": 89}

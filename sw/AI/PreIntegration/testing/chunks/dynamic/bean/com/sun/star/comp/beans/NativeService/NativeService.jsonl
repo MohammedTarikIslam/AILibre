@@ -1,0 +1,1 @@
+{"file": "bean/com/sun/star/comp/beans/NativeService.java", "chunk_id": 0, "code": "// FILE: bean/com/sun/star/comp/beans/NativeService.java\n// CHUNK 0 | estimated_tokens: 47\n\n/*\n* @deprecated\n*/\n@Deprecated\ninterface NativeService {\n    String getIdentifier();\n    void startupService() throws java.io.IOException;\n    int getStartupTime();\n}", "tokens": 85}

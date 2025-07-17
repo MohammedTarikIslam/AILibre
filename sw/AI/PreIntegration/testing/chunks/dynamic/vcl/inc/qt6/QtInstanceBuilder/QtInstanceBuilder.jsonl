@@ -1,0 +1,1 @@
+{"file": "vcl/inc/qt6/QtInstanceBuilder.hxx", "chunk_id": 0, "code": "// FILE: vcl/inc/qt6/QtInstanceBuilder.hxx\n// CHUNK 0 | estimated_tokens: 15 | starts at line 0\n\n#include \"../qt5/QtInstanceBuilder.hxx\"", "tokens": 57}

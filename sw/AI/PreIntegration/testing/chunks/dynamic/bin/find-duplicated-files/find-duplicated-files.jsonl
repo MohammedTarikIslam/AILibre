@@ -1,0 +1,1 @@
+{"file": "bin/find-duplicated-files.py", "chunk_id": 0, "code": "// FILE: bin/find-duplicated-files.py\n// CHUNK 0 | estimated_tokens: 87\n\ndef print_diff_files(dcmp):\n    for name in dcmp.same_files:\n        print(\"%s found in %s and %s\" % (name, dcmp.left, dcmp.right))\n    for sub_dcmp in dcmp.subdirs.values():\n        print_diff_files(sub_dcmp)", "tokens": 120}

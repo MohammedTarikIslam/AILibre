@@ -1,0 +1,1 @@
+{"file": "soltools/mkdepend/imakemdep.h", "chunk_id": 0, "code": "// FILE: soltools/mkdepend/imakemdep.h\n// CHUNK 0 | estimated_tokens: 20\n\n/* FIXME: strange list of obsolete systems */\nstruct pair predefs", "tokens": 54}

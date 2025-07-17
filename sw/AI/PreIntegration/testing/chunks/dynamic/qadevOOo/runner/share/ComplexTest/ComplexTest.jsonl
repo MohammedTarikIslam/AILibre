@@ -1,0 +1,1 @@
+{"file": "qadevOOo/runner/share/ComplexTest.java", "chunk_id": 0, "code": "// FILE: qadevOOo/runner/share/ComplexTest.java\n// CHUNK 0 | estimated_tokens: 31\n\n/**\n* Interface for complex tests.\n*/\npublic interface ComplexTest {\n\n    String[] getTestMethodNames();\n\n}", "tokens": 68}

@@ -1,0 +1,1 @@
+{"file": "reportbuilder/java/org/libreoffice/report/pentaho/model/OfficeTableSection.java", "chunk_id": 0, "code": "// FILE: reportbuilder/java/org/libreoffice/report/pentaho/model/OfficeTableSection.java\n// CHUNK 0 | estimated_tokens: 46\n\n/**\n* Creation-Date: 24.04.2007, 15:55:17\n*\n*/\npublic class OfficeTableSection extends Section\n{\n\n}", "tokens": 92}

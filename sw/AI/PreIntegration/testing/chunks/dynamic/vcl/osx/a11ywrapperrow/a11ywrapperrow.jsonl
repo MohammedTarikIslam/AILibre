@@ -1,0 +1,1 @@
+{"file": "vcl/osx/a11ywrapperrow.h", "chunk_id": 0, "code": "// FILE: vcl/osx/a11ywrapperrow.h\n// CHUNK 0 | estimated_tokens: 38\n\n#include <osx/a11ywrapper.h>\ninterface AquaA11yWrapperRow : AquaA11yWrapper\n{\n}", "tokens": 74}

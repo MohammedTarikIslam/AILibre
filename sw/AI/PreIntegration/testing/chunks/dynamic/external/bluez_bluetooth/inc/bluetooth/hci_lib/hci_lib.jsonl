@@ -1,0 +1,1 @@
+{"file": "external/bluez_bluetooth/inc/bluetooth/hci_lib.h", "chunk_id": 0, "code": "// FILE: external/bluez_bluetooth/inc/bluetooth/hci_lib.h\n// CHUNK 0 | estimated_tokens: 85\n\n#ifdef __cplusplus\n#endif\n#ifdef __cplusplus\n#endif\nstatic inline int hci_test_bit(int nr, void* addr)\n{\n    return *((uint32_t*)addr + (nr >> 5)) & (1 << (nr & 31));\n}", "tokens": 126}

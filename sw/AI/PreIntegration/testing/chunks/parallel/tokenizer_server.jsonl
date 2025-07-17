@@ -1,0 +1,1 @@
+{"file":"tokenizer_server.py","chunk_id":0,"code":"// FILE: tokenizer_server.py\n// CHUNK 0 | estimated_tokens: 46\n\nasync def tokenize(request: Request):\n    data = await request.json()\n    prompt = data.get(\"prompt\", \"\")\n    tokens = llm.tokenize(prompt.encode(\"utf-8\"))\n    return {\"tokens\": tokens}","tokens":62}

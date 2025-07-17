@@ -1,0 +1,1 @@
+{"file": "bean/com/sun/star/comp/beans/HasConnectionException.java", "chunk_id": 0, "code": "// FILE: bean/com/sun/star/comp/beans/HasConnectionException.java\n// CHUNK 0 | estimated_tokens: 13\n\n*/\npublic class HasConnectionException extends Exception\n{\n}", "tokens": 52}

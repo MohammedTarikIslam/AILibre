@@ -1,0 +1,1 @@
+{"file": "odk/qa/checkapi/checkapi.cxx", "chunk_id": 0, "code": "// FILE: odk/qa/checkapi/checkapi.cxx\n// CHUNK 0 | estimated_tokens: 39\n\n#include <allheaders.hxx>\nSAL_DLLPUBLIC_EXPORT sal_Bool firstfunc(sal_Bool) { return true; }", "tokens": 75}

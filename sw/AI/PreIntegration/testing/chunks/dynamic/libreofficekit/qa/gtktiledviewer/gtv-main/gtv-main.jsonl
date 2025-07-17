@@ -1,0 +1,1 @@
+{"file": "libreofficekit/qa/gtktiledviewer/gtv-main.cxx", "chunk_id": 0, "code": "// FILE: libreofficekit/qa/gtktiledviewer/gtv-main.cxx\n// CHUNK 0 | estimated_tokens: 58\n\n#include \"gtv-application.hxx\"\nint main(int argc, char* argv[])\n{\n    return g_application_run(G_APPLICATION(gtv_application_new()), argc, argv);\n}", "tokens": 101}

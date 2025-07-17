@@ -1,0 +1,1 @@
+{"file": "apple_remote/source/RemoteControlContainer.h", "chunk_id": 0, "code": "// FILE: apple_remote/source/RemoteControlContainer.h\n// CHUNK 0 | estimated_tokens: 41\n\n#import <apple_remote/RemoteControl.h>\nrface RemoteControlContainer : RemoteControl\n{\n    NSMutableArray* remoteControls;\n}\n\n-", "tokens": 74}

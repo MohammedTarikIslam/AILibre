@@ -1,0 +1,1 @@
+{"file": "android/source/src/java/org/libreoffice/ColorPaletteListener.java", "chunk_id": 0, "code": "// FILE: android/source/src/java/org/libreoffice/ColorPaletteListener.java\n// CHUNK 0 | estimated_tokens: 31\n\npublic interface ColorPaletteListener {\n    void applyColor(int color);\n    void updateColorPickerPosition(int color);\n}", "tokens": 73}

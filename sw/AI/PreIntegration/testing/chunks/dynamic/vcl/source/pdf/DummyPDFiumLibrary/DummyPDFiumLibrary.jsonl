@@ -1,0 +1,1 @@
+{"file": "vcl/source/pdf/DummyPDFiumLibrary.cxx", "chunk_id": 0, "code": "// FILE: vcl/source/pdf/DummyPDFiumLibrary.cxx\n// CHUNK 0 | estimated_tokens: 58\n\n#include <vcl/filter/PDFiumLibrary.hxx>\nstd::shared_ptr<PDFium>& PDFiumLibrary::get()\n{\n    static std::shared_ptr<PDFium> pInstance;\n    return pInstance;\n}", "tokens": 95}

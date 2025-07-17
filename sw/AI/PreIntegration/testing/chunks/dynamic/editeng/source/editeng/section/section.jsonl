@@ -1,0 +1,1 @@
+{"file": "editeng/source/editeng/section.cxx", "chunk_id": 0, "code": "// FILE: editeng/source/editeng/section.cxx\n// CHUNK 0 | estimated_tokens: 68\n\n#include <editeng/section.hxx>\nSection::Section(sal_Int32 nPara, sal_Int32 nStart, sal_Int32 nEnd) :\n    mnParagraph(nPara), mnStart(nStart), mnEnd(nEnd){}", "tokens": 102}

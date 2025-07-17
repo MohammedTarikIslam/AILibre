@@ -1,0 +1,1 @@
+{"file": "vcl/qt5/QtPrinter.cxx", "chunk_id": 0, "code": "// FILE: vcl/qt5/QtPrinter.cxx\n// CHUNK 0 | estimated_tokens: 48\n\n#include <QtPrinter.hxx>\nQtPrinter::QtPrinter(SalInfoPrinter* pInfoPrinter)\n    : PspSalPrinter(pInfoPrinter)\n{\n}", "tokens": 82}

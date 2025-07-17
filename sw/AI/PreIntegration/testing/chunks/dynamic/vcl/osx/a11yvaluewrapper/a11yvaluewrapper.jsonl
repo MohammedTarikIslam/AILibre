@@ -1,0 +1,1 @@
+{"file": "vcl/osx/a11yvaluewrapper.h", "chunk_id": 0, "code": "// FILE: vcl/osx/a11yvaluewrapper.h\n// CHUNK 0 | estimated_tokens: 62\n\n#include <osx/salinst.h>\n#include <osx/osxvcltypes.h>\n#include <osx/a11ywrapper.h>\ninterface AquaA11yValueWrapper : NSObject\n{\n}", "tokens": 98}

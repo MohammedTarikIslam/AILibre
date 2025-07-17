@@ -1,0 +1,1 @@
+{"file": "extensions/source/activex/SOActiveX.h", "chunk_id": 0, "code": "// FILE: extensions/source/activex/SOActiveX.h\n// CHUNK 0 | estimated_tokens: 34\n\n#include <so_activex.h>\nclass SODispatchInterceptor\n// CSOActiveX\nclass ATL_NO_VTABLE", "tokens": 69}

@@ -1,0 +1,1 @@
+{"file":"testing.py","chunk_id":0,"code":"// FILE: testing.py\n// CHUNK 0 | estimated_tokens: 44\n\ndef get_llm():\n    return Llama(\n        model_path=MODEL_PATH,\n        n_ctx=16384,\n        n_gpu_layers=10,  # Ensure this is a proper nonzero value\n        n_threads=8\n    )","tokens":57}

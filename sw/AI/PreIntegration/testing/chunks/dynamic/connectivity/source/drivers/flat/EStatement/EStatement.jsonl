@@ -1,0 +1,1 @@
+{"file": "connectivity/source/drivers/flat/EStatement.cxx", "chunk_id": 0, "code": "// FILE: connectivity/source/drivers/flat/EStatement.cxx\n// CHUNK 0 | estimated_tokens: 66\n\n#include <flat/EStatement.hxx>\n#include <flat/EResultSet.hxx>\nrtl::Reference<OResultSet> OFlatStatement::createResultSet()\n{\n    return new OFlatResultSet(this,m_aSQLIterator);\n}", "tokens": 101}

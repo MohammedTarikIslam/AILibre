@@ -1,0 +1,1 @@
+{"file": "sc/source/core/data/dpglobal.cxx", "chunk_id": 0, "code": "// FILE: sc/source/core/data/dpglobal.cxx\n// CHUNK 0 | estimated_tokens: 86\n\n#include <dpglobal.hxx>\nScDPValue::ScDPValue() : mfValue(0.0), meType(String) {}\n#include <dpglobal.hxx>\nvoid ScDPValue::Set( double fV, Type eT )\n{\n    mfValue = fV;\n    meType = eT;\n}", "tokens": 122}

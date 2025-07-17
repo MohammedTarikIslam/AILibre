@@ -1,0 +1,1 @@
+{"file": "include/osl/signal.h", "chunk_id": 0, "code": "// FILE: include/osl/signal.h\n// CHUNK 0 | estimated_tokens: 58\n\n#ifdef _WIN32\n#   pragma pack(push, 8)\n#endif\nstruct\n{\n    oslSignal   Signal;\n    sal_Int32   UserSignal;\n    void*       UserData;\n}", "tokens": 88}

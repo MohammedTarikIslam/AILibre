@@ -1,0 +1,1 @@
+{"file": "vcl/inc/unx/gtk/glomenu.h", "chunk_id": 0, "code": "// FILE: vcl/inc/unx/gtk/glomenu.h\n// CHUNK 0 | estimated_tokens: 76\n\n#define G_IS_LO_MENU(inst)      (G_TYPE_CHECK_INSTANCE_TYPE ((inst), \\\nstruct GLOMenu\n#define G_IS_LO_MENU(inst)      (G_TYPE_CHECK_INSTANCE_TYPE ((inst), \\\nclass GtkSalMenuItem", "tokens": 114}

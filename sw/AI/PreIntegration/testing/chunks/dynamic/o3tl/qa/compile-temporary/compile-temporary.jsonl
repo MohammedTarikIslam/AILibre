@@ -1,0 +1,1 @@
+{"file": "o3tl/qa/compile-temporary.cxx", "chunk_id": 0, "code": "// FILE: o3tl/qa/compile-temporary.cxx\n// CHUNK 0 | estimated_tokens: 93\n\n#include <o3tl/temporary.hxx>\nvoid h(int n)\n{\n    f(&o3tl::temporary(int()));\n    f(&o3tl::temporary(g()));\n    f(&o3tl::temporary(n)); // expected-error {{}} expected-note@o3tl/temporary.hxx:* 0+ {{}}\n}", "tokens": 129}

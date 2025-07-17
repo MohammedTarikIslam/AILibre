@@ -1,0 +1,1 @@
+{"file": "vcl/osx/a11ytextattributeswrapper.h", "chunk_id": 0, "code": "// FILE: vcl/osx/a11ytextattributeswrapper.h\n// CHUNK 0 | estimated_tokens: 34\n\n#include <osx/a11ywrapper.h>\ninterface AquaA11yTextAttributesWrapper : NSObject\n{\n}", "tokens": 71}

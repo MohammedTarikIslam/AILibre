@@ -1,0 +1,1 @@
+{"file": "qadevOOo/tests/java/ifc/sdb/_XSQLErrorBroadcaster.java", "chunk_id": 0, "code": "// FILE: qadevOOo/tests/java/ifc/sdb/_XSQLErrorBroadcaster.java\n// CHUNK 0 | estimated_tokens: 46\n\n/**\n*\n*/\npublic class _XSQLErrorBroadcaster extends MultiMethodTest {\n\n    public XSQLErrorBroadcaster oObj = null;\n}", "tokens": 94}

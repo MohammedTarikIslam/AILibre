@@ -1,0 +1,1 @@
+{"file": "sc/source/core/data/celltextattr.cxx", "chunk_id": 0, "code": "// FILE: sc/source/core/data/celltextattr.cxx\n// CHUNK 0 | estimated_tokens: 66\n\n#include <celltextattr.hxx>\n#include <globalnames.hxx>\nCellTextAttr::CellTextAttr() :\n    mnTextWidth(TEXTWIDTH_DIRTY),\n    mnScriptType(SvtScriptType::UNKNOWN) {}", "tokens": 102}

@@ -1,0 +1,1 @@
+{"file": "sw/source/filter/basflt/docfact.cxx", "chunk_id": 0, "code": "// FILE: sw/source/filter/basflt/docfact.cxx\n// CHUNK 0 | estimated_tokens: 96\n\n#include <doc.hxx>\n#include <docfac.hxx>\nSwDocFac::SwDocFac( SwDoc *pDc )\n    : mxDoc( pDc )\n{\n}\nSwDoc& SwDocFac::GetDoc()\n{\n    if(!mxDoc.is())\n        mxDoc = new SwDoc;\n    return *mxDoc;\n}", "tokens": 134}

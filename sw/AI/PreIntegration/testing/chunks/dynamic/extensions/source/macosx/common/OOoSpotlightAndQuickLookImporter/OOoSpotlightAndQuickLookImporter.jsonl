@@ -1,0 +1,1 @@
+{"file": "extensions/source/macosx/common/OOoSpotlightAndQuickLookImporter.h", "chunk_id": 0, "code": "// FILE: extensions/source/macosx/common/OOoSpotlightAndQuickLookImporter.h\n// CHUNK 0 | estimated_tokens: 35\n\n#import <Cocoa/Cocoa.h>\ninterface OOoSpotlightAndQuickLookImporter : NSObject\n{\n}", "tokens": 79}

@@ -1,0 +1,1 @@
+{"file": "vcl/osx/a11yutil.h", "chunk_id": 0, "code": "// FILE: vcl/osx/a11yutil.h\n// CHUNK 0 | estimated_tokens: 33\n\n#include <com/sun/star/awt/Point.hpp>\ninterface AquaA11yUtil : NSObject\n{\n}", "tokens": 68}

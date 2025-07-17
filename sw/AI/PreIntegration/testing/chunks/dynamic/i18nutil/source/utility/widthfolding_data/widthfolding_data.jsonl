@@ -1,0 +1,1 @@
+{"file": "i18nutil/source/utility/widthfolding_data.h", "chunk_id": 0, "code": "// FILE: i18nutil/source/utility/widthfolding_data.h\n// CHUNK 0 | estimated_tokens: 35\n\n*/\nstruct {\n  sal_Unicode decomposited_character_1;\n  sal_Unicode decomposited_character_2;\n}", "tokens": 75}

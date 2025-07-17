@@ -1,0 +1,1 @@
+{"file": "sal/osl/unx/soffice.cxx", "chunk_id": 0, "code": "// FILE: sal/osl/unx/soffice.cxx\n// CHUNK 0 | estimated_tokens: 58\n\n#include \"soffice.hxx\"\nvoid sal::detail::setSoffice() { flag = true; }\n#include \"soffice.hxx\"\nbool sal::detail::isSoffice() { return flag; }", "tokens": 95}

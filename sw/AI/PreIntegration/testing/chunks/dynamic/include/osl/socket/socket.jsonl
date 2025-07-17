@@ -1,0 +1,1 @@
+{"file": "include/osl/socket.h", "chunk_id": 0, "code": "// FILE: include/osl/socket.h\n// CHUNK 0 | estimated_tokens: 31\n\n*/\nstruct oslSocketAddrImpl\n/**@{ begin section oslSocket\n*/\nstruct oslSocketImpl\n*/\nstruct oslHostAddrImpl", "tokens": 63}

@@ -1,0 +1,1 @@
+{"file": "vcl/inc/osx/a11yfactory.h", "chunk_id": 0, "code": "// FILE: vcl/inc/osx/a11yfactory.h\n// CHUNK 0 | estimated_tokens: 63\n\n#include \"osxvcltypes.h\"\n#include \"a11ywrapper.h\"\n#include <com/sun/star/accessibility/XAccessibleContext.hpp>\ninterface AquaA11yFactory : NSObject\n{\n}", "tokens": 100}

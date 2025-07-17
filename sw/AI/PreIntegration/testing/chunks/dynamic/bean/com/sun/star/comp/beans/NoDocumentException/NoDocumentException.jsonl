@@ -1,0 +1,1 @@
+{"file": "bean/com/sun/star/comp/beans/NoDocumentException.java", "chunk_id": 0, "code": "// FILE: bean/com/sun/star/comp/beans/NoDocumentException.java\n// CHUNK 0 | estimated_tokens: 13\n\n*/\npublic class NoDocumentException extends Exception\n{\n}", "tokens": 52}

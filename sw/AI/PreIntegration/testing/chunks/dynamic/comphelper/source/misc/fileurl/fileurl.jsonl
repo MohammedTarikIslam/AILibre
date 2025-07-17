@@ -1,0 +1,1 @@
+{"file": "comphelper/source/misc/fileurl.cxx", "chunk_id": 0, "code": "// FILE: comphelper/source/misc/fileurl.cxx\n// CHUNK 0 | estimated_tokens: 86\n\n#include <comphelper/fileurl.hxx>\n#include <rtl/ustring.hxx>\n#include <o3tl/string_view.hxx>\nbool comphelper::isFileUrl(std::u16string_view url)\n{\n    return o3tl::matchIgnoreAsciiCase(url, \"file:\");\n}", "tokens": 121}

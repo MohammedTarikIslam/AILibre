@@ -1,0 +1,1 @@
+{"file": "package/qa/ofopxmlstorages/StorageTest.java", "chunk_id": 0, "code": "// FILE: package/qa/ofopxmlstorages/StorageTest.java\n// CHUNK 0 | estimated_tokens: 13\n\npublic interface StorageTest\n{\n    boolean test();\n}", "tokens": 51}

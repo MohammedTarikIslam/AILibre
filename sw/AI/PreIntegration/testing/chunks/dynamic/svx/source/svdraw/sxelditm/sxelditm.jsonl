@@ -1,0 +1,1 @@
+{"file": "svx/source/svdraw/sxelditm.cxx", "chunk_id": 0, "code": "// FILE: svx/source/svdraw/sxelditm.cxx\n// CHUNK 0 | estimated_tokens: 38\n\n#include <svx/sxelditm.hxx>\nSdrEdgeLineDeltaCountItem::~SdrEdgeLineDeltaCountItem() = default;", "tokens": 76}

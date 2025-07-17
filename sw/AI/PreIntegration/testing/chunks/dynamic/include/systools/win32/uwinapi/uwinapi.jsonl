@@ -1,0 +1,1 @@
+{"file": "include/systools/win32/uwinapi.h", "chunk_id": 0, "code": "// FILE: include/systools/win32/uwinapi.h\n// CHUNK 0 | estimated_tokens: 46\n\n#ifdef __cplusplus\ninline bool IsValidHandle(HANDLE handle)\n{\n    return handle != INVALID_HANDLE_VALUE && handle != nullptr;\n}", "tokens": 83}

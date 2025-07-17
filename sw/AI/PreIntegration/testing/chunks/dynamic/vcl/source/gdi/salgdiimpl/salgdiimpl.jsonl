@@ -1,0 +1,1 @@
+{"file": "vcl/source/gdi/salgdiimpl.cxx", "chunk_id": 0, "code": "// FILE: vcl/source/gdi/salgdiimpl.cxx\n// CHUNK 0 | estimated_tokens: 24\n\n#include <salgdiimpl.hxx>\nSalGraphicsImpl::~SalGraphicsImpl() {}", "tokens": 61}

@@ -1,0 +1,1 @@
+{"file": "include/uno/Enterable.h", "chunk_id": 0, "code": "// FILE: include/uno/Enterable.h\n// CHUNK 0 | estimated_tokens: 95\n\n*/\nstruct\n{\n    uno_Enterable_enter      * m_enter;\n    uno_Enterable_leave      * m_leave;\n    uno_Enterable_callInto_v * m_callInto_v;\n    uno_Enterable_callOut_v  * m_callOut_v;\n    uno_Enterable_isValid_v  * m_isValid;\n}", "tokens": 126}
